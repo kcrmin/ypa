@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class GoalCard extends StatefulWidget {
+  final String name;
   final int progress;
   final DateTime dueDate;
   const GoalCard({
+    required this.name,
     required this.progress,
     required this.dueDate,
     Key? key,
@@ -26,7 +28,7 @@ class _GoalCardState extends State<GoalCard> {
       ),
       child: Column(
         children: [
-          _TopHalf(dueDate: widget.dueDate),
+          _TopHalf(name: widget.name, dueDate: widget.dueDate),
           _BottomHalf(progress: widget.progress),
         ],
       ),
@@ -35,8 +37,10 @@ class _GoalCardState extends State<GoalCard> {
 }
 
 class _TopHalf extends StatelessWidget {
+  final String name;
   final DateTime dueDate;
-  const _TopHalf({required this.dueDate, Key? key}) : super(key: key);
+  const _TopHalf({required this.name, required this.dueDate, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +56,7 @@ class _TopHalf extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "Goal Name Here",
+            name,
             style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.w700,
@@ -89,6 +93,7 @@ class _TopHalf extends StatelessWidget {
     }
     if (days > 0) return "D-${days.toString()}";
   }
+
   // check state
   checkStateColor(int dDay) {
     if (dDay <= 0) {
