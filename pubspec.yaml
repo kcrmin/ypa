@@ -39,6 +39,11 @@ dependencies:
   step_progress_indicator: ^1.0.2
   intl: ^0.18.1
   numberpicker: ^2.1.2
+  google_fonts: ^0.3.8
+  table_calendar: ^3.0.9
+
+dependency_overrides:
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
