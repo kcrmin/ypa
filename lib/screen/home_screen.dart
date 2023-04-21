@@ -42,13 +42,14 @@ class _Top extends StatelessWidget {
       child: Row(
         children: [
           MoodPieChart(
-              radius: 50,
-              excited_value: 20,
-              sad_value: 20,
-              calm_value: 20,
-              happy_value: 20,
-              frustrated_value: 10,
-              angry_value: 10),
+            radius: 50,
+            excited_value: 20,
+            sad_value: 20,
+            calm_value: 20,
+            happy_value: 20,
+            frustrated_value: 10,
+            angry_value: 10,
+          ),
         ],
       ),
     );
@@ -87,8 +88,6 @@ class _Bottom extends StatelessWidget {
     );
   }
 }
-
-
 
 // IconButton(
 // onPressed: () {

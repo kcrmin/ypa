@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class MoodPieChart extends StatelessWidget {
-  final String selected;
   final double radius;
   final double excited_value;
   final double sad_value;
@@ -11,17 +10,16 @@ class MoodPieChart extends StatelessWidget {
   final double frustrated_value;
   final double angry_value;
 
-  const MoodPieChart(
-      {required this.selected,
-      required this.radius,
-      required this.excited_value,
-      required this.sad_value,
-      required this.calm_value,
-      required this.happy_value,
-      required this.frustrated_value,
-      required this.angry_value,
-      Key? key})
-      : super(key: key);
+  const MoodPieChart({
+    required this.radius,
+    required this.excited_value,
+    required this.sad_value,
+    required this.calm_value,
+    required this.happy_value,
+    required this.frustrated_value,
+    required this.angry_value,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,12 +70,12 @@ class _MoodChoice extends StatelessWidget {
             spacing: 8,
             runSpacing: 16,
             children: [
-              renderColor(Colors.red, checkSelected(selected)),
-              renderColor(Colors.orange, checkSelected(selected)),
-              renderColor(Colors.green, checkSelected(selected)),
-              renderColor(Colors.cyan, checkSelected(selected)),
-              renderColor(Colors.indigoAccent, checkSelected(selected)),
-              renderColor(Colors.pink, checkSelected(selected)),
+              // renderColor(Colors.red),
+              // renderColor(Colors.orange),
+              // renderColor(Colors.green),
+              // renderColor(Colors.cyan),
+              // renderColor(Colors.indigoAccent),
+              // renderColor(Colors.pink),
             ],
           ),
         ],
@@ -128,10 +126,8 @@ class _MoodChoice extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: color,
-        border: Border.all(
-          width: selected ? 1 : 0,
-          color: Colors.grey.shade700,
-        ),
+        border:
+            selected ? Border.all(width: 2, color: Colors.grey.shade700) : null,
       ),
       width: 32.0,
       height: 32.0,
