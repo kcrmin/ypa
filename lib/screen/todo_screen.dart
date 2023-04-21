@@ -5,7 +5,12 @@ import '../component/todoList.dart';
 
 
 class ToDoScreen extends StatefulWidget {
-  const ToDoScreen({Key? key}) : super(key: key);
+  final DateTime selectedDay;
+  final DateTime focusedDay;
+  const ToDoScreen({
+    required this.selectedDay,
+    required this.focusedDay,
+    Key? key}) : super(key: key);
 
   @override
   State<ToDoScreen> createState() => _ToDoScreenState();
@@ -13,7 +18,16 @@ class ToDoScreen extends StatefulWidget {
 
 class _ToDoScreenState extends State<ToDoScreen> {
   DateTime selectedDay = DateTime.now();
-  DateTime focusedDay= DateTime.now();
+  DateTime focusedDay = DateTime.now();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedDay = widget.selectedDay;
+    focusedDay = widget.focusedDay;
+  }
+
   
   List<todoItem> todos = [
     todoItem(DateTime.utc(2023, 4, 16), false, 'first todo'),

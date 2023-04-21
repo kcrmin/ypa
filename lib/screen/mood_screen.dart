@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ypa/screen/todo_screen.dart';
 import '../component/calendar.dart';
-
-import 'dart:developer';
 
 // Angry - Colors.red
 // Frustrated - Colors.orange
@@ -40,14 +39,20 @@ class _MoodScreenState extends State<MoodScreen> {
       body: Center(
         child: GestureDetector(
           onDoubleTap: () {
+            setState(() {
+              onDaySelected(selectedDay, focusedDay);
+            });
             //show todo_screen
-            Navigator.of(context).pushNamed('/todo');
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_)=> ToDoScreen(selectedDay: selectedDay, focusedDay: focusedDay))
+            );
           },
           child: Calendar(
             //todos: todos,
             selectedDay: selectedDay,
             focusedDay: focusedDay,
             onDaySelected: onDaySelected,
+            onPageChanged: onPageChanged,
             moodMap: moodMap,
           ),
         )
@@ -59,5 +64,19 @@ class _MoodScreenState extends State<MoodScreen> {
       this.selectedDay = selectedDay;
       this.focusedDay = selectedDay;
     });
+  }
+  onPageChanged(DateTime focusedDay){
+    setState(() {
+      this.focusedDay = focusedDay;
+    });
+  }
+}
+
+class _Calendar extends StatelessWidget {
+  const _Calendar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

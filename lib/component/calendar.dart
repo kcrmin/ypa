@@ -7,6 +7,7 @@ class Calendar extends StatelessWidget {
   final DateTime? selectedDay;
   final DateTime focusedDay;
   final OnDaySelected? onDaySelected;
+  final onPageChanged;
   //final List<Color> moodMap;
   final Map<DateTime, Color> moodMap;
   //final List<todoItem> todoList;
@@ -15,6 +16,7 @@ class Calendar extends StatelessWidget {
     required this.selectedDay,
     required this.focusedDay,
     required this.onDaySelected,
+    required this.onPageChanged,
     required this.moodMap,
     //required this.todoList,
     Key? key,
@@ -32,7 +34,6 @@ class Calendar extends StatelessWidget {
     );
 
     return
-     
        TableCalendar(
         focusedDay: focusedDay,
         firstDay: DateTime(1800),
@@ -57,8 +58,8 @@ class Calendar extends StatelessWidget {
                 height: 10,
                 alignment: Alignment.bottomLeft,
                 decoration: BoxDecoration(
-                //retrieve color of a specific day for moodMap, do not display color for not fpcused month or when key(date) not contained in the map 
-                color: (day.month==selectedDay?.month)&moodMap.containsKey(day)?moodMap[day]:Colors.transparent,
+                //retrieve color of a specific day for moodMap, do not display color for not focused month or when key(date) not contained in the map
+                color: (day.month==focusedDay?.month)&moodMap.containsKey(day)?moodMap[day]:Colors.transparent,
                 borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -112,7 +113,7 @@ class Calendar extends StatelessWidget {
      
         // store input data of date selected
         onDaySelected: onDaySelected,
-     
+        onPageChanged: onPageChanged,
         // enable to select date and display
         selectedDayPredicate: (DateTime day) {
           if (selectedDay == null) {

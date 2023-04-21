@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ypa/data/todo_item.dart';
 import 'package:ypa/screen/classroom_screen.dart';
 import 'package:ypa/screen/mood_screen.dart';
-import 'package:ypa/screen/test_screen.dart';
 import 'screen/home_screen.dart';
 import 'screen/todo_screen.dart';
 
@@ -13,13 +11,11 @@ void main() {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: '/mood',
       routes: {
-        '/': (context) => ToDoScreen(),
-        '/test': (context) => TestScreen(),
+        '/': (context) => HomeScreen(),
         '/class': (context) => ClassroomScreen(),
-        '/todo': (constext) => ToDoScreen(),
-        
+        '/mood': (context) => MoodScreen(),
       },
     ),
   );

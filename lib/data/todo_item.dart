@@ -3,6 +3,4 @@ class todoItem {
   bool completed;
   String title;
   todoItem(this.day, this.completed, this.title);
-
-
 }
