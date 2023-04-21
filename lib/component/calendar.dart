@@ -53,7 +53,7 @@ class Calendar extends StatelessWidget {
            markerBuilder: (context, day, todos) =>  
      
      
-              Container(                 
+              Container(
                 width: 20,
                 height: 10,
                 alignment: Alignment.bottomLeft,
@@ -114,6 +114,7 @@ class Calendar extends StatelessWidget {
         // store input data of date selected
         onDaySelected: onDaySelected,
         onPageChanged: onPageChanged,
+
         // enable to select date and display
         selectedDayPredicate: (DateTime day) {
           if (selectedDay == null) {

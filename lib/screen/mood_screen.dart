@@ -59,6 +59,8 @@ class _MoodScreenState extends State<MoodScreen> {
       ),
     );
   }
+
+
   onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
       this.selectedDay = selectedDay;
@@ -69,14 +71,5 @@ class _MoodScreenState extends State<MoodScreen> {
     setState(() {
       this.focusedDay = focusedDay;
     });
-  }
-}
-
-class _Calendar extends StatelessWidget {
-  const _Calendar({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
   }
 }
