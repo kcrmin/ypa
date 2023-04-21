@@ -3,19 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarBar extends StatelessWidget {
-  //final List<String> todos;
   final DateTime? selectedDay;
   final DateTime focusedDay;
   final OnDaySelected? onDaySelected;
-  final List<Color> moodList;
-  //final bool hasTodo;
+  final Map<DateTime, Color> moodMap;
 
   const CalendarBar({
     required this.selectedDay,
     required this.focusedDay,
     required this.onDaySelected,
-    //required this.hasTodo,
-    required this.moodList,
+    required this.moodMap,
     //required this.todos,
     Key? key,
   }) : super(key: key);
@@ -50,7 +47,7 @@ class CalendarBar extends StatelessWidget {
               height: 10,
               alignment: Alignment.bottomLeft,
               decoration: BoxDecoration(
-              color: (day.day<moodList.length)&(day.month==selectedDay?.month)?moodList[day.day-1]:Colors.transparent,
+              color: (day.month==selectedDay?.month)&moodMap.containsKey(day)?moodMap[day]:Colors.transparent,
               borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -62,9 +59,6 @@ class CalendarBar extends StatelessWidget {
       calendarStyle: CalendarStyle(
         isTodayHighlighted: true,
         markersAlignment: Alignment.bottomCenter,
-        // markersAlignment: Alignment.bottomRight,
-        // markerDecoration: BoxDecoration(
-        //     color: Colors.red, borderRadius: BorderRadius.circular(6.0)),
 
         todayDecoration: BoxDecoration(
             color: Colors.cyan, borderRadius: BorderRadius.circular(6.0)),

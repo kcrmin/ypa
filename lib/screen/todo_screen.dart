@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ypa/data/todo_item.dart';
 
 import '../component/todoList.dart';
 
@@ -13,10 +14,28 @@ class ToDoScreen extends StatefulWidget {
 class _ToDoScreenState extends State<ToDoScreen> {
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay= DateTime.now();
-  List<bool> isCompletedList = [true, false, true,true, false, true,true, false, true];
-  List<String> todos = ['assignment 1', 'study for midterm', 'washing dishes','1','2','3','4','5','6'];
-  List<Color> moodList=[Colors.green, Colors.red, Colors.blue,Colors.yellow,Colors.orange,Colors.green, Colors.red, Colors.blue,Colors.yellow,Colors.orange,Colors.green, Colors.red, Colors.blue,Colors.yellow,Colors.orange];
-  @override
+  
+  List<todoItem> todos = [
+    todoItem(DateTime.utc(2023, 4, 16), false, 'first todo'),
+    todoItem(DateTime.utc(2023, 4, 16), false, 'second todo'),
+    todoItem(DateTime.utc(2023, 4, 16), true, 'third todo'),
+    todoItem(DateTime.utc(2023, 4, 16), true, 'fourth'),
+    todoItem(DateTime.utc(2023, 4, 21), false, '5th'),
+    todoItem(DateTime.utc(2023, 4, 21), false, '6th'),
+    todoItem(DateTime.utc(2023, 3, 16), false, '7th'),
+    todoItem(DateTime.utc(2023, 3, 16), false, '8th'),
+  ];
+   Map<DateTime,Color> moodMap = {
+              DateTime.utc(2023, 3, 16) : Colors.red,
+              DateTime.utc(2023, 3, 18) : Colors.red,
+              DateTime.utc(2023, 4, 1) : Colors.red,
+              DateTime.utc(2023, 4, 1) : Colors.red,
+              DateTime.utc(2023, 4, 2) : Colors.blue,
+              DateTime.utc(2023, 4, 3) : Colors.orange,
+              DateTime.utc(2023, 4, 4) : Colors.red,
+              DateTime.utc(2023, 4, 5) : Colors.pink,
+              DateTime.utc(2023, 4, 6) : Colors.indigoAccent,
+            };
   Widget build(BuildContext context){
     return Scaffold(
       body: 
@@ -27,11 +46,10 @@ class _ToDoScreenState extends State<ToDoScreen> {
               selectedDay: selectedDay,
               focusedDay:focusedDay,
               onDaySelected: onDaySelected,
-              isCompletedList: isCompletedList,
               changeCompletionStatus: changeCompletionStatus,
               deleteTodo: deleteTodo,
               addTodo: addTodo,
-              moodList: moodList,
+              moodMap: moodMap,
           )
         ),
     );
@@ -42,22 +60,30 @@ class _ToDoScreenState extends State<ToDoScreen> {
       this.focusedDay = selectedDay;
     });
   }
-  changeCompletionStatus(List<bool> isCompletedList, int index){
+  changeCompletionStatus(List<todoItem> todos, DateTime selectedDay, String todo){
     setState(() {
-      isCompletedList[index] = !isCompletedList[index];
+      for(int i = 0; i < todos.length; i++){
+        if(todos[i].day==selectedDay&&todos[i].title==todo){
+          todos[i].completed=!todos[i].completed;
+        }
+      }
     });
   }
-  deleteTodo(List<bool> isCompletedList, List<String> todos, int index){
+  deleteTodo(List<todoItem> todos, DateTime selectedDay, String todo){
     setState(() {
-      todos.removeAt(index);
-      isCompletedList.removeAt(index);
+      
+       for(int i = 0; i < todos.length; i++){
+        if(todos[i].day==selectedDay&&todos[i].title==todo){
+          todos.removeAt(i);
+        }}
+
     });
   }
 
-  addTodo(List<bool> isCompletedList, List<String> todos, String todo){
+  addTodo(List<todoItem> todos, DateTime selectedDay, String todo){
      setState(() {
-      todos.add(todo);
-      isCompletedList.add(false);
+      todos.add(todoItem(selectedDay, false, todo));
     });
   }
+  
 }

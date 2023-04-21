@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ypa/data/todo_item.dart';
 import 'package:ypa/screen/classroom_screen.dart';
+import 'package:ypa/screen/mood_screen.dart';
 import 'package:ypa/screen/test_screen.dart';
 import 'screen/home_screen.dart';
 import 'screen/todo_screen.dart';
@@ -13,9 +15,10 @@ void main() {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => HomeScreen(),
+        '/': (context) => ToDoScreen(),
         '/test': (context) => TestScreen(),
         '/class': (context) => ClassroomScreen(),
+        '/todo': (constext) => ToDoScreen(),
         
       },
     ),
