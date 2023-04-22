@@ -32,7 +32,7 @@ class Calendar extends StatelessWidget {
       borderRadius: BorderRadius.circular(6.0),
     );
     final defaultTextStyle = TextStyle(
-      color: Colors.grey[0600],
+      color: Colors.grey[600],
       fontWeight: FontWeight.w700,
     );
     return
