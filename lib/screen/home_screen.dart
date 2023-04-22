@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ypa/component/calendar.dart';
 import 'package:ypa/component/date_card.dart';
 import 'package:ypa/component/goal_card.dart';
 import 'package:ypa/component/goal_form.dart';
@@ -39,19 +40,24 @@ class _Top extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       // child: DateCard(),
-      child: Row(
+      child: Column(
         children: [
-          MoodPieChart(
-            radius: 50,
-            excited_value: 20,
-            sad_value: 20,
-            calm_value: 20,
-            happy_value: 20,
-            frustrated_value: 10,
-            angry_value: 10,
-          ),
+          // Calendar(selectedDay: selectedDay, focusedDay: focusedDay, onDaySelected: onDaySelected, onPageChanged: onPageChanged, moodList: moodList)
         ],
-      ),
+      )
+      // Row(
+      //   children: [
+      //     // MoodPieChart(
+      //     //   radius: 50,
+      //     //   excited_value: 20,
+      //     //   sad_value: 20,
+      //     //   calm_value: 20,
+      //     //   happy_value: 20,
+      //     //   frustrated_value: 10,
+      //     //   angry_value: 10,
+      //     // ),
+      //   ],
+      // ),
     );
   }
 }
