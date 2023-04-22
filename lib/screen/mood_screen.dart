@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:ypa/data/daily_mood.dart';
 import 'package:ypa/screen/todo_screen.dart';
 import '../component/calendar.dart';
 
@@ -20,19 +23,17 @@ class _MoodScreenState extends State<MoodScreen> {
   
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay= DateTime.now();
-  //List<bool> isCompletedList = [true, false, true,true, false, true,true, false, true];
-  //List<String> todos = ['assignment 1', 'study for midterm', 'washing dishes','1','2','3','4','5','6'];
-  Map<DateTime,Color> moodMap = {
-              DateTime.utc(2023, 3, 16) : Colors.red,
-              DateTime.utc(2023, 3, 18) : Colors.red,
-              DateTime.utc(2023, 4, 1) : Colors.red,
-              DateTime.utc(2023, 4, 1) : Colors.red,
-              DateTime.utc(2023, 4, 2) : Colors.blue,
-              DateTime.utc(2023, 4, 3) : Colors.orange,
-              DateTime.utc(2023, 4, 4) : Colors.red,
-              DateTime.utc(2023, 4, 5) : Colors.pink,
-              DateTime.utc(2023, 4, 6) : Colors.indigoAccent,
-            };
+
+  List<dailyMood> moodList = [
+    dailyMood (DateTime.utc(2023, 3, 16), '7887de'),
+    dailyMood (DateTime.utc(2023, 3, 9) ,'7887de'),
+    dailyMood (DateTime.utc(2023, 4, 16) ,'7887de'),
+    dailyMood (DateTime.utc(2023, 4, 20) ,'7887de'),
+    dailyMood (DateTime.utc(2023, 4, 16) ,'7887de'),
+    dailyMood (DateTime.utc(2023, 4, 22) ,'7887de'),
+    dailyMood (DateTime.utc(2023, 4, 1) ,'7887de'),
+    
+    ];
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -41,6 +42,7 @@ class _MoodScreenState extends State<MoodScreen> {
           onDoubleTap: () {
             setState(() {
               onDaySelected(selectedDay, focusedDay);
+              //log('mood screen selected day: $selectedDay');
             });
             //show todo_screen
             Navigator.of(context).push(
@@ -53,7 +55,7 @@ class _MoodScreenState extends State<MoodScreen> {
             focusedDay: focusedDay,
             onDaySelected: onDaySelected,
             onPageChanged: onPageChanged,
-            moodMap: moodMap,
+            moodList: moodList,
           ),
         )
       ),
@@ -65,6 +67,7 @@ class _MoodScreenState extends State<MoodScreen> {
     setState(() {
       this.selectedDay = selectedDay;
       this.focusedDay = selectedDay;
+      //log('mood screen selected day: $selectedDay');
     });
   }
   onPageChanged(DateTime focusedDay){

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-// import '/components/Calender_Bar.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import '../data/todo_item.dart';
 import 'calendar_bar.dart';
 import 'dart:developer';
@@ -20,7 +18,7 @@ class TodoList extends StatelessWidget {
     required this.changeCompletionStatus,//how to change completion status in data base fron here?
     required this.deleteTodo,
     required this.addTodo,
-    required this.moodMap,
+    required this.moodList,
     Key? key,
   }) : super(key: key); 
   final List<todoItem> todos;
@@ -32,12 +30,11 @@ class TodoList extends StatelessWidget {
   final dynamic changeCompletionStatus;
   final dynamic deleteTodo;
   final dynamic addTodo;
-  final dynamic moodMap;
+  final dynamic moodList;
   
   @override
   Widget build(BuildContext context) {
-    int bo=numTodo(todos,selectedDay);
-     log('$bo');
+    log('todoList received selected day: $selectedDay');
     return Scaffold(
       
       backgroundColor: Colors.grey[200],
@@ -66,7 +63,7 @@ class TodoList extends StatelessWidget {
                 selectedDay: selectedDay, 
                 focusedDay: focusedDay, 
                 onDaySelected: onDaySelected,
-                moodMap: moodMap,
+                moodList: moodList,
                 )
           )
         ),

@@ -1,6 +1,10 @@
 //import 'package:calendar_test/const/colors.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:ypa/data/daily_mood.dart';
+import 'package:ypa/util/string_color.dart';
 
 class Calendar extends StatelessWidget {
   //final List<String> todos;
@@ -8,8 +12,7 @@ class Calendar extends StatelessWidget {
   final DateTime focusedDay;
   final OnDaySelected? onDaySelected;
   final onPageChanged;
-  //final List<Color> moodMap;
-  final Map<DateTime, Color> moodMap;
+  final List<dailyMood> moodList;
   //final List<todoItem> todoList;
 
   Calendar({
@@ -17,7 +20,7 @@ class Calendar extends StatelessWidget {
     required this.focusedDay,
     required this.onDaySelected,
     required this.onPageChanged,
-    required this.moodMap,
+    required this.moodList,
     //required this.todoList,
     Key? key,
   }) : super(key: key);
@@ -32,7 +35,6 @@ class Calendar extends StatelessWidget {
       color: Colors.grey[0600],
       fontWeight: FontWeight.w700,
     );
-
     return
        TableCalendar(
         focusedDay: focusedDay,
@@ -59,7 +61,7 @@ class Calendar extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 decoration: BoxDecoration(
                 //retrieve color of a specific day for moodMap, do not display color for not focused month or when key(date) not contained in the map
-                color: (day.month==focusedDay?.month)&moodMap.containsKey(day)?moodMap[day]:Colors.transparent,
+                color: (day.month==focusedDay.month)&(hasMood(moodList,day)!=-1)?stringColor(moodList[hasMood(moodList,day)].color):Colors.transparent,
                 borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -127,5 +129,14 @@ class Calendar extends StatelessWidget {
         },
          );
      
+  }
+  //returns the index of dailyMood if mood is recorded for day, else return -1
+  int hasMood (List<dailyMood> moodList, DateTime day) {
+    for(int i=0; i<moodList.length; i++){
+      if((moodList[i].day.month==day.month)&(moodList[i].day.day==day.day)){
+        return i;
+      }
+    }
+    return -1;
   }
 }

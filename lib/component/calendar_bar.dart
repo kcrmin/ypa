@@ -2,17 +2,20 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../data/daily_mood.dart';
+import '../util/string_color.dart';
+
 class CalendarBar extends StatelessWidget {
   final DateTime? selectedDay;
   final DateTime focusedDay;
   final OnDaySelected? onDaySelected;
-  final Map<DateTime, Color> moodMap;
+  final List<dailyMood> moodList;
 
   const CalendarBar({
     required this.selectedDay,
     required this.focusedDay,
     required this.onDaySelected,
-    required this.moodMap,
+     required this.moodList,
     //required this.todos,
     Key? key,
   }) : super(key: key);
@@ -47,7 +50,7 @@ class CalendarBar extends StatelessWidget {
               height: 10,
               alignment: Alignment.bottomLeft,
               decoration: BoxDecoration(
-              color: (day.month==selectedDay?.month)&moodMap.containsKey(day)?moodMap[day]:Colors.transparent,
+               color: (day.month==focusedDay.month)&(hasMood(moodList,day)!=-1)?stringColor(moodList[hasMood(moodList,day)].color):Colors.transparent,
               borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -112,5 +115,14 @@ class CalendarBar extends StatelessWidget {
             day.day == selectedDay!.day;
       },
     );
+  }
+    //returns the index of dailyMood if mood is recorded for day, else return -1
+  int hasMood (List<dailyMood> moodList, DateTime day) {
+    for(int i=0; i<moodList.length; i++){
+      if((moodList[i].day.month==day.month)&(moodList[i].day.day==day.day)){
+        return i;
+      }
+    }
+    return -1;
   }
 }

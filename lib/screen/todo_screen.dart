@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ypa/data/todo_item.dart';
-
 import '../component/todoList.dart';
+import 'dart:developer';
 
+import '../data/daily_mood.dart';
 
 class ToDoScreen extends StatefulWidget {
   final DateTime selectedDay;
@@ -39,18 +40,18 @@ class _ToDoScreenState extends State<ToDoScreen> {
     todoItem(DateTime.utc(2023, 3, 16), false, '7th'),
     todoItem(DateTime.utc(2023, 3, 16), false, '8th'),
   ];
-   Map<DateTime,Color> moodMap = {
-              DateTime.utc(2023, 3, 16) : Colors.red,
-              DateTime.utc(2023, 3, 18) : Colors.red,
-              DateTime.utc(2023, 4, 1) : Colors.red,
-              DateTime.utc(2023, 4, 1) : Colors.red,
-              DateTime.utc(2023, 4, 2) : Colors.blue,
-              DateTime.utc(2023, 4, 3) : Colors.orange,
-              DateTime.utc(2023, 4, 4) : Colors.red,
-              DateTime.utc(2023, 4, 5) : Colors.pink,
-              DateTime.utc(2023, 4, 6) : Colors.indigoAccent,
-            };
+  List<dailyMood> moodList = [
+    dailyMood (DateTime.utc(2023, 3, 16), '7887de'),
+    dailyMood (DateTime.utc(2023, 3, 9) ,'7887de'),
+    dailyMood (DateTime.utc(2023, 4, 16) ,'7887de'),
+    dailyMood (DateTime.utc(2023, 4, 20) ,'7887de'),
+    dailyMood (DateTime.utc(2023, 4, 16) ,'7887de'),
+    dailyMood (DateTime.utc(2023, 4, 22) ,'7887de'),
+    dailyMood (DateTime.utc(2023, 4, 1) ,'7887de'),
+    
+    ];
   Widget build(BuildContext context){
+    log('todo screen passed selected day: $selectedDay');
     return Scaffold(
       body: 
         Center(
@@ -63,7 +64,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
               changeCompletionStatus: changeCompletionStatus,
               deleteTodo: deleteTodo,
               addTodo: addTodo,
-              moodMap: moodMap,
+              moodList: moodList,
           )
         ),
     );
