@@ -2,8 +2,8 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ypa/screen/classroom_screen.dart';
-import 'package:ypa/screen/test_screen.dart';
 import 'database/drift_database.dart';
+import 'package:ypa/screen/mood_screen.dart';
 import 'screen/home_screen.dart';
 
 const DEFAULT_COLORS = [
@@ -48,8 +48,8 @@ void main() async {
       initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
-        '/test': (context) => TestScreen(),
         '/class': (context) => ClassroomScreen(),
+        '/mood': (context) => MoodScreen(),
       },
     ),
   );
