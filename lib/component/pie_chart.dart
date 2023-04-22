@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:get_it/get_it.dart';
+import 'package:ypa/database/drift_database.dart';
+import 'package:ypa/util/string_color.dart';
 
 class MoodPieChart extends StatelessWidget {
   final double radius;
@@ -30,7 +33,13 @@ class MoodPieChart extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _MoodChoice(),
+          FutureBuilder<List<MoodColor>>(
+              future: GetIt.I<LocalDatabase>().getColors(),
+              builder: (context, snapshot) {
+                return _MoodPicker(
+                  colors: snapshot.hasData ? snapshot.data! : [],
+                );
+              }),
           _Chart(
               radius: radius,
               excited_value: excited_value,
@@ -46,8 +55,12 @@ class MoodPieChart extends StatelessWidget {
   }
 }
 
-class _MoodChoice extends StatelessWidget {
-  const _MoodChoice({Key? key}) : super(key: key);
+class _MoodPicker extends StatelessWidget {
+  final List<MoodColor> colors;
+  const _MoodPicker({
+    required this.colors,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -69,68 +82,20 @@ class _MoodChoice extends StatelessWidget {
           Wrap(
             spacing: 8,
             runSpacing: 16,
-            children: [
-              // renderColor(Colors.red),
-              // renderColor(Colors.orange),
-              // renderColor(Colors.green),
-              // renderColor(Colors.cyan),
-              // renderColor(Colors.indigoAccent),
-              // renderColor(Colors.pink),
-            ],
+            children:
+                colors.map((e) => renderColor(stringColor(e.color))).toList(),
           ),
         ],
       ),
     );
   }
 
-  checkSelected(String selected) {
-    switch (selected) {
-      case "Angry":
-        {
-          return true;
-        }
-
-      case "Frustrated":
-        {
-          return true;
-        }
-
-      case "Happy":
-        {
-          return true;
-        }
-
-      case "Calm":
-        {
-          return true;
-        }
-
-      case "Sad":
-        {
-          return true;
-        }
-
-      case "Excited":
-        {
-          return true;
-        }
-      default:
-        {
-          return false;
-        }
-    }
-  }
-
-  Widget renderColor(Color color, bool selected) {
+  Widget renderColor(Color color) {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: color,
-        border:
-            selected ? Border.all(width: 2, color: Colors.grey.shade700) : null,
       ),
-      width: 32.0,
-      height: 32.0,
     );
   }
 }

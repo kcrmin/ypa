@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import '../model/goal.dart';
 import '../model/mood.dart';
 import '../model/todo_item.dart';
+import 'package:ypa/model/mood_color.dart';
 
 part 'drift_database.g.dart';  // error for now
 
@@ -22,6 +23,7 @@ part 'drift_database.g.dart';  // error for now
     Goals,  // modify
     Moods,  // modify
     Todos,  // modify
+    MoodColors,
   ],
 )
 
@@ -29,7 +31,33 @@ class LocalDatabase extends _$LocalDatabase{
   LocalDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;  // manage schema version
+  int get schemaVersion => 2;  // manage schema version
+
+  /// create
+  Future<int> createGoal(GoalsCompanion data) =>
+      into(goals).insert(data);  // Model/Table/Class in lowercase on first letter
+
+  Future<int> createMood(MoodsCompanion data) =>
+      into(moods).insert(data);  // Model/Table/Class in lowercase on first letter
+
+  Future<int> createTodo(TodosCompanion data) =>
+      into(todos).insert(data);  // Model/Table/Class in lowercase on first letter
+
+  Future<int> createColor(MoodColorsCompanion data) =>
+      into(moodColors).insert(data);
+
+  /// select
+  Future<List<Mood>> getMoods() =>
+      select(moods).get();
+
+  Future<List<Goal>> getGoals() =>
+      select(goals).get();
+
+  Future<List<Todo>> getTodos() =>
+      select(todos).get();
+
+  Future<List<MoodColor>> getColors() =>
+      select(moodColors).get();
 }
 
 // set DB location

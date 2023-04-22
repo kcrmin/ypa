@@ -8,5 +8,5 @@ class Moods extends Table {
   DateTimeColumn get date => dateTime()();
 
   // Color
-  TextColumn get completed => text()();
+  IntColumn get colorId => integer()();
 }
