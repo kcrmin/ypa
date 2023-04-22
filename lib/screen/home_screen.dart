@@ -36,14 +36,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return MainLayout(
       body: Column(
         children: [
-          _Top(
-            selectedDay: selectedDay,
-            focusedDay: focusedDay,
-            onDaySelected: onDaySelected,
-            onPageChanged: onPageChanged,
-            onDoubleTap: onDoubleTap,
+          SizedBox(
+            height: 25,
           ),
-          HomeBanner(),
+          _Top(),
+          SizedBox(
+            height: 10,
+          ),
+          HomeBanner(title: "Goal"),
+          SizedBox(
+            height: 10,
+          ),
           _Bottom(),
         ],
       ),
@@ -77,32 +80,15 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _Top extends StatelessWidget {
-  final DateTime selectedDay;
-  final DateTime focusedDay;
-  final onDaySelected;
-  final onPageChanged;
-  final GestureTapCallback onDoubleTap;
-  const _Top(
-      {required this.selectedDay,
-      required this.focusedDay,
-      required this.onDaySelected,
-      required this.onPageChanged,
-      required this.onDoubleTap,
-      Key? key})
-      : super(key: key);
+  const _Top({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onDoubleTap: onDoubleTap,
-      child: Calendar(
-        //todos: todos,
-        selectedDay: selectedDay,
-        focusedDay: focusedDay,
-        onDaySelected: onDaySelected,
-        onPageChanged: onPageChanged,
-        moodList: moodList,
-      ),
+      onTap: (){
+        Navigator.of(context).pushNamed('/mood');
+      },
+      child: DateCard(),
     );
   }
 }

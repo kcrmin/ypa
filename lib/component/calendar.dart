@@ -40,7 +40,7 @@ class Calendar extends StatelessWidget {
         focusedDay: focusedDay,
         firstDay: DateTime(1800),
         lastDay: DateTime(3000),
-     
+        headerVisible: false,
         headerStyle: const HeaderStyle(
           formatButtonVisible: false, // remove 2 weeks button
           titleCentered: true,

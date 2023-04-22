@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:ypa/util/goal_dialog.dart';
 
 class HomeBanner extends StatelessWidget {
-  const HomeBanner({Key? key}) : super(key: key);
+  final title;
+  const HomeBanner({
+    required this.title,
+    Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,7 @@ class HomeBanner extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Goals",
+              title.toString(),
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w800,
