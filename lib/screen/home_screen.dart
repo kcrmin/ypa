@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:ypa/component/date_card.dart';
 import 'package:ypa/component/goal_card.dart';
@@ -34,21 +33,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: MainLayout(
-        body: Column(
-          children: [
-            _Top(
-              selectedDay: selectedDay,
-              focusedDay: focusedDay,
-              onDaySelected: onDaySelected,
-              onPageChanged: onPageChanged,
-              onDoubleTap: onDoubleTap,
-            ),
-            HomeBanner(),
-            _Bottom(),
-          ],
-        ),
+    return MainLayout(
+      body: Column(
+        children: [
+          _Top(
+            selectedDay: selectedDay,
+            focusedDay: focusedDay,
+            onDaySelected: onDaySelected,
+            onPageChanged: onPageChanged,
+            onDoubleTap: onDoubleTap,
+          ),
+          HomeBanner(),
+          _Bottom(),
+        ],
       ),
     );
   }

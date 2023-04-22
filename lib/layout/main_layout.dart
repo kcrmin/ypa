@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MainLayout extends StatelessWidget {
-  final Widget body;
+  final body;
   const MainLayout({
     required this.body,
     Key? key,
@@ -35,7 +35,6 @@ class MainLayout extends StatelessWidget {
         ],
       ),
       body: body,
-      backgroundColor: Colors.grey[200],
     );
   }
 }
