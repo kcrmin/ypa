@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ypa/util/string_color.dart';
 
 class DateCard extends StatelessWidget {
   const DateCard({Key? key}) : super(key: key);
@@ -8,7 +9,7 @@ class DateCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.teal[200],
+        color: stringColor("7895B2"),
         borderRadius: BorderRadius.circular(20.0),
       ),
       width: MediaQuery.of(context).size.width,

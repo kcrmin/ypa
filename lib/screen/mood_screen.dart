@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ypa/component/banner.dart';
 import 'package:ypa/component/date_card.dart';
 import 'package:ypa/component/goal_card.dart';
 import 'package:ypa/component/goal_form.dart';
@@ -34,20 +35,30 @@ class _MoodScreenState extends State<MoodScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MainLayout(
+    return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 25,),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 53,
+            color: Color(0xFFAEBDCA),
+
+          ),
           _Top(
             selectedDay: selectedDay,
             focusedDay: focusedDay,
             onDaySelected: onDaySelected,
             onPageChanged: onPageChanged,
             onDoubleTap: onDoubleTap,
+            moodList: moodList,
           ),
-          SizedBox(height: 10,),
-          HomeBanner(title: "${DateFormat.yMMMM().format(focusedDay)}        My Mood Status"),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
+          Banners(title: "My Mood Status"),
+          SizedBox(
+            height: 10,
+          ),
           _Bottom(),
         ],
       ),
@@ -86,12 +97,14 @@ class _Top extends StatelessWidget {
   final onDaySelected;
   final onPageChanged;
   final GestureTapCallback onDoubleTap;
+  final moodList;
   const _Top(
       {required this.selectedDay,
       required this.focusedDay,
       required this.onDaySelected,
       required this.onPageChanged,
       required this.onDoubleTap,
+      required this.moodList,
       Key? key})
       : super(key: key);
 
@@ -123,8 +136,8 @@ class _Bottom extends StatelessWidget {
           child: Align(
             alignment: Alignment.topCenter,
             child: MoodPieChart(
-                radius: 50,
-                excited_value: 20,
+                radius: 80,
+                excited_value: 10,
                 sad_value: 20,
                 calm_value: 20,
                 happy_value: 20,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ypa/util/string_color.dart';
 
 class MainLayout extends StatelessWidget {
   final body;
@@ -10,29 +11,34 @@ class MainLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: IconButton(
-          onPressed: () {
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          },
-          icon: Image.asset(
-            'asset/img/YPA_logo.png',
-            scale: 5.5,
-          ),
-        ),
-        actions: [
-          IconButton(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70),
+        child: AppBar(
+          backgroundColor: stringColor("AEBDCA"),
+          centerTitle: true,
+          title: IconButton(
             onPressed: () {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil('/class', (route) => route.isFirst);
+              Navigator.of(context).popUntil((route) => route.isFirst);
             },
-            icon: Icon(
-              Icons.people,
-              size: 35,
+            icon: Image.asset(
+              'asset/img/YPA_logo.png',
+              scale: 6,
             ),
           ),
-        ],
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil('/class', (route) => route.isFirst);
+              },
+              icon: Icon(
+                Icons.people,
+                size: 35,
+
+              ),
+            ),
+          ],
+        ),
       ),
       body: body,
     );

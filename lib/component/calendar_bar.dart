@@ -64,7 +64,7 @@ class CalendarBar extends StatelessWidget {
         markersAlignment: Alignment.bottomCenter,
 
         todayDecoration: BoxDecoration(
-            color: Colors.cyan, borderRadius: BorderRadius.circular(6.0)),
+            color: stringColor("7895B2"), borderRadius: BorderRadius.circular(6.0)),
 
         // DATE BOX DECORATION
         // weekdays

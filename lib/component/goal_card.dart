@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:ypa/util/string_color.dart';
 
 class GoalCard extends StatefulWidget {
   final String name;
@@ -23,7 +24,7 @@ class _GoalCardState extends State<GoalCard> {
       width: MediaQuery.of(context).size.width,
       height: 80,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: stringColor("F5EFE6"),
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: Column(

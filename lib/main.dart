@@ -45,7 +45,7 @@ void main() async {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      initialRoute: '/',
+      initialRoute: '/mood',
       routes: {
         '/': (context) => HomeScreen(),
         '/class': (context) => ClassroomScreen(),

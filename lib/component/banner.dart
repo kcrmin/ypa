@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter/material.dart';
 import 'package:ypa/util/goal_dialog.dart';
 import 'package:ypa/util/string_color.dart';
 
-class HomeBanner extends StatelessWidget {
+class Banners extends StatelessWidget {
   final title;
-  const HomeBanner({
+  const Banners({
     required this.title,
     Key? key}) : super(key: key);
 
@@ -17,7 +19,7 @@ class HomeBanner extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               title.toString(),
@@ -27,22 +29,7 @@ class HomeBanner extends StatelessWidget {
                 fontSize: 19,
               ),
             ),
-            GestureDetector(
-              onTap: (){
-                showGoalDialog(context);
-              },
-              child: Text(
-                String.fromCharCode(Icons.add.codePoint),
-                style: TextStyle(
-                  inherit: false,
-                  color: Colors.white,
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: Icons.add.fontFamily,
-                  package: Icons.add.fontPackage,
-                ),
-              ),
-            )
+
           ],
         ),
       ),

@@ -27,12 +27,32 @@ class MoodPieChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
       width: MediaQuery.of(context).size.width - 16,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
+          Container(
+            height: 270,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: _Chart(
+                    radius: radius,
+                    excited_value: excited_value,
+                    sad_value: sad_value,
+                    calm_value: calm_value,
+                    happy_value: happy_value,
+                    frustrated_value: frustrated_value,
+                    angry_value: angry_value,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: _IndicatorList(),
+                ),
+              ],
+            ),
+          ),
           FutureBuilder<List<MoodColor>>(
               future: GetIt.I<LocalDatabase>().getColors(),
               builder: (context, snapshot) {
@@ -40,15 +60,6 @@ class MoodPieChart extends StatelessWidget {
                   colors: snapshot.hasData ? snapshot.data! : [],
                 );
               }),
-          _Chart(
-              radius: radius,
-              excited_value: excited_value,
-              sad_value: sad_value,
-              calm_value: calm_value,
-              happy_value: happy_value,
-              frustrated_value: frustrated_value,
-              angry_value: angry_value),
-          _IndicatorList(),
         ],
       ),
     );
@@ -65,14 +76,14 @@ class _MoodPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
-      width: 80,
+      height: 100,
+      width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SizedBox(height: 12),
           Text(
-            "April 10th",
+            "Pick Your Color",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -80,7 +91,7 @@ class _MoodPicker extends StatelessWidget {
           ),
           Divider(),
           Wrap(
-            spacing: 8,
+            spacing: 20,
             runSpacing: 16,
             children:
                 colors.map((e) => renderColor(stringColor(e.color))).toList(),
@@ -92,8 +103,8 @@ class _MoodPicker extends StatelessWidget {
 
   Widget renderColor(Color color) {
     return Container(
-      width: 30,
-      height: 30,
+      width: 40,
+      height: 40,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: color,
@@ -141,7 +152,7 @@ class _Chart extends StatelessWidget {
       radius: radius,
       titlePositionPercentageOffset: 0.5,
       titleStyle: TextStyle(
-        fontSize: 12,
+        fontSize: 15,
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
@@ -197,17 +208,18 @@ class _IndicatorList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _Indicator(color: Colors.red, title: "Angry"),
-        _Indicator(color: Colors.orange, title: "Frustrated"),
-        _Indicator(color: Colors.green, title: "Happy"),
-        _Indicator(color: Colors.cyan, title: "Calm"),
-        _Indicator(color: Colors.indigoAccent, title: "Sad"),
-        _Indicator(color: Colors.pink, title: "Excited")
-      ],
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _Indicator(color: Colors.red, title: "Angry"),
+          _Indicator(color: Colors.orange, title: "Frustrated"),
+          _Indicator(color: Colors.green, title: "Happy"),
+          _Indicator(color: Colors.cyan, title: "Calm"),
+          _Indicator(color: Colors.indigoAccent, title: "Sad"),
+          _Indicator(color: Colors.pink, title: "Excited")
+        ],
+      ),
     );
   }
 }
@@ -221,14 +233,14 @@ class _Indicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 120,
+      width: 95,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 15,
-            height: 15,
+            width: 10,
+            height: 10,
             color: color,
           ),
           SizedBox(width: 8),
@@ -236,7 +248,7 @@ class _Indicator extends StatelessWidget {
             title,
             style: TextStyle(
                 fontWeight: FontWeight.w800,
-                fontSize: 16,
+                fontSize: 11,
                 color: Colors.grey[800]),
           ),
         ],

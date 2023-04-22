@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           SizedBox(
-            height: 25,
+            height: 15,
           ),
           _Top(),
           SizedBox(
@@ -88,7 +88,10 @@ class _Top extends StatelessWidget {
       onTap: (){
         Navigator.of(context).pushNamed('/mood');
       },
-      child: DateCard(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: DateCard(),
+      ),
     );
   }
 }
@@ -115,8 +118,8 @@ class _Bottom extends StatelessWidget {
               },
               child: GoalCard(
                 name: "Hi",
-                progress: 20,
-                dueDate: DateTime(2023, 05, 01),
+                progress: 30,
+                dueDate: DateTime(2023, 05, 29),
               ),
             );
           },
