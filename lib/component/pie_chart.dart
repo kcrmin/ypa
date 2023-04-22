@@ -92,6 +92,8 @@ class _MoodPicker extends StatelessWidget {
 
   Widget renderColor(Color color) {
     return Container(
+      width: 30,
+      height: 30,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: color,
