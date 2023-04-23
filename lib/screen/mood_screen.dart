@@ -21,8 +21,16 @@ class MoodScreen extends StatefulWidget {
 }
 
 class _MoodScreenState extends State<MoodScreen> {
-  DateTime selectedDay = DateTime.now();
-  DateTime focusedDay = DateTime.now();
+  DateTime selectedDay = DateTime.utc(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
+  DateTime focusedDay = DateTime.utc(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
   List<dailyMood> moodList = [
     dailyMood(DateTime.utc(2023, 3, 16), '7887de'),
     dailyMood(DateTime.utc(2023, 3, 9), '7887de'),
