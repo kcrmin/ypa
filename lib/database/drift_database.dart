@@ -15,51 +15,45 @@ import '../model/mood.dart';
 import '../model/todo_item.dart';
 import 'package:ypa/model/mood_color.dart';
 
-part 'drift_database.g.dart';  // error for now
-
-
+part 'drift_database.g.dart'; // error for now
 
 @DriftDatabase(
   tables: [
-    Goals,  // modify
-    Moods,  // modify
-    Todos,  // modify
+    Goals, // modify
+    Moods, // modify
+    Todos, // modify
     MoodColors,
   ],
 )
-
-class LocalDatabase extends _$LocalDatabase{
+class LocalDatabase extends _$LocalDatabase {
   LocalDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;  // manage schema version
+  int get schemaVersion => 2; // manage schema version
 
   /// create
-  Future<int> createGoal(GoalsCompanion data) =>
-      into(goals).insert(data);  // Model/Table/Class in lowercase on first letter
+  Future<int> createGoal(GoalsCompanion data) => into(goals)
+      .insert(data); // Model/Table/Class in lowercase on first letter
 
-  Future<int> createMood(MoodsCompanion data) =>
-      into(moods).insert(data);  // Model/Table/Class in lowercase on first letter
+  Future<int> createMood(MoodsCompanion data) => into(moods)
+      .insert(data); // Model/Table/Class in lowercase on first letter
 
-  Future<int> createTodo(TodosCompanion data) =>
-      into(todos).insert(data);  // Model/Table/Class in lowercase on first letter
+  Future<int> createTodo(TodosCompanion data) => into(todos)
+      .insert(data); // Model/Table/Class in lowercase on first letter
 
   Future<int> createColor(MoodColorsCompanion data) =>
       into(moodColors).insert(data);
 
   /// select
   // select all
-  Stream<List<Mood>> getMoods() =>
-      select(moods).watch();
+  Stream<List<Mood>> getMoods() => select(moods).watch();
 
-  Future<List<Goal>> getGoals() =>
-      select(goals).get();
+  Stream<List<Goal>> getGoals() =>
+  (select(goals)..orderBy([(t) => OrderingTerm.asc(t.dueDate)])).watch();
 
-  Future<List<Todo>> getTodos() =>
-      select(todos).get();
+  Future<List<Todo>> getTodos() => select(todos).get();
 
-  Future<List<MoodColor>> getColors() =>
-      select(moodColors).get();
+  Future<List<MoodColor>> getColors() => select(moodColors).get();
 
   // select by ID
   Future<Mood> getMoodByDate(DateTime day) =>
@@ -74,39 +68,46 @@ class LocalDatabase extends _$LocalDatabase{
   Future<Todo> getTodoById(int id) =>
       (select(todos)..where((tbl) => tbl.id.equals(id))).getSingle();
 
-
   // join
   Stream<List<MoodWithColor>> getMoodWithColor() {
     final query = select(moods).join([
-      innerJoin(moodColors, moodColors.id.equalsExp(moods.id)) // columnName is FK column name
+      innerJoin(moodColors,
+          moodColors.id.equalsExp(moods.id)) // columnName is FK column name
     ]);
 
     // rows = all data, row = each data
     return query.watch().map(
-          (rows) => rows.map(
-            (row) => MoodWithColor(
-          mood: row.readTable(moods),
-          moodColor: row.readTable(moodColors),
-        ),
-      ).toList(),
-    );
+          (rows) => rows
+              .map(
+                (row) => MoodWithColor(
+                  mood: row.readTable(moods),
+                  moodColor: row.readTable(moodColors),
+                ),
+              )
+              .toList(),
+        );
   }
 
   Stream<MoodWithColor> getMoodWithColorByDate(DateTime date) {
     final query = select(moods).join([
-      innerJoin(moodColors, moodColors.id.equalsExp(moods.colorId)) // columnName is FK column name
+      innerJoin(
+          moodColors,
+          moodColors.id
+              .equalsExp(moods.colorId)) // columnName is FK column name
     ]);
-    
+
     query.where(moods.date.equals(date));
 
     return query.watch().map(
-          (rows) => rows.map(
-            (row) => MoodWithColor(
-          mood: row.readTable(moods),
-          moodColor: row.readTable(moodColors),
-        ),
-      ).toList()[0],
-    );
+          (rows) => rows
+              .map(
+                (row) => MoodWithColor(
+                  mood: row.readTable(moods),
+                  moodColor: row.readTable(moodColors),
+                ),
+              )
+              .toList()[0],
+        );
   }
 
   /// Update
@@ -128,14 +129,15 @@ class LocalDatabase extends _$LocalDatabase{
 
   removeTodoById(int id) =>
       (delete(todos)..where((tbl) => tbl.id.equals(id))).go();
-
 }
 
 // set DB location
-LazyDatabase _openConnection(){
-  return LazyDatabase(()async{
-    final dbFolder = await getApplicationDocumentsDirectory();  // bring application directory assigned by OS
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));  // Import library 'dart.io'. // set file name as db.sqlite
+LazyDatabase _openConnection() {
+  return LazyDatabase(() async {
+    final dbFolder =
+        await getApplicationDocumentsDirectory(); // bring application directory assigned by OS
+    final file = File(p.join(dbFolder.path,
+        'db.sqlite')); // Import library 'dart.io'. // set file name as db.sqlite
     return NativeDatabase(file);
   });
 }

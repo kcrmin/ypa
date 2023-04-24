@@ -64,18 +64,20 @@ class _TopHalf extends StatelessWidget {
             ),
           ),
           Container(
-            width: 55,
             height: 25,
             decoration: BoxDecoration(
               color: checkStateColor(dDay), // change by its dueDate
               borderRadius: BorderRadius.circular(8.0),
             ),
-            child: Center(
-              child: Text(
-                dDayString(dDay),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5.0),
+              child: Center(
+                child: Text(
+                  dDayString(dDay),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),

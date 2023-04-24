@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:ypa/component/date_card.dart';
 import 'package:ypa/component/goal_card.dart';
 import 'package:ypa/component/goal_form.dart';
 import 'package:ypa/component/home_banner.dart';
+import 'package:ypa/database/drift_database.dart';
 import 'package:ypa/layout/main_layout.dart';
 import 'package:ypa/screen/todo_screen.dart';
 import 'package:ypa/util/goal_dialog.dart';
@@ -97,32 +99,45 @@ class _Top extends StatelessWidget {
 }
 
 class _Bottom extends StatelessWidget {
-  const _Bottom({Key? key}) : super(key: key);
+  const _Bottom({
+    Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView.separated(
-          itemCount: 3,
-          separatorBuilder: (context, index) {
-            return SizedBox(
-              height: 8.0,
-            );
-          },
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                showGoalDialog(context);
+        child: StreamBuilder<List<Goal>>(
+          stream: GetIt.I<LocalDatabase>().getGoals(),
+          builder: (context, snapshot) {
+            return ListView.separated(
+              itemCount: snapshot.data!.length,
+              separatorBuilder: (context, index) {
+                return SizedBox(
+                  height: 8.0,
+                );
               },
-              child: GoalCard(
-                name: "Hi",
-                progress: 30,
-                dueDate: DateTime(2023, 05, 29),
-              ),
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    showGoalDialog(context, snapshot.data![index].id);
+                  },
+                  child: Dismissible(
+                    key: ObjectKey(snapshot.data![index].id),
+                    direction: DismissDirection.endToStart,
+                    onDismissed: (DismissDirection direction){
+                      GetIt.I<LocalDatabase>().removeGoalById(snapshot.data![index].id);
+                    },
+                    child: GoalCard(
+                      name: snapshot.data![index].title,
+                      progress: snapshot.data![index].progress,
+                      dueDate: snapshot.data![index].dueDate,
+                    ),
+                  ),
+                );
+              },
             );
-          },
+          }
         ),
       ),
     );

@@ -1,16 +1,26 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ypa/database/drift_database.dart';
 
 class GoalForm extends StatefulWidget {
-  const GoalForm({Key? key}) : super(key: key);
+  final int? selectedGoalId;
+  const GoalForm({
+    this.selectedGoalId,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<GoalForm> createState() => _GoalFormState();
 }
 
 class _GoalFormState extends State<GoalForm> {
-  DateTime selectedDay = DateTime.now();
+  final GlobalKey<FormState> formKey = GlobalKey();
+  int? selectedGoalIdNum;
+  String title = "";
+  DateTime duedate = DateTime.now();
 
   // _Middle1
   double currentNum1 = 0;
@@ -21,35 +31,86 @@ class _GoalFormState extends State<GoalForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.0),
-        // border: Border.all(color: Colors.black, width: 1.0),
-        color: Colors.white,
-      ),
-      height: 300, // _Middle1 = 250 || _Middle2 = 450
-      width: 350,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _Top(
-              onDateChanged: onDateChanged,
-              selectedDay: selectedDay,
+    return FutureBuilder<Goal>(
+        future: widget.selectedGoalId == null
+            ? null
+            : GetIt.I<LocalDatabase>().getGoalById(widget.selectedGoalId!),
+        builder: (context, snapshot) {
+          if (snapshot.hasData && this.selectedGoalIdNum == null) {
+            this.selectedGoalIdNum = widget.selectedGoalId;
+            this.duedate = snapshot.data!.dueDate;
+            this.currentNum2 = snapshot.data!.progress;
+            this.title = snapshot.data!.title;
+          };
+
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              // border: Border.all(color: Colors.black, width: 1.0),
+              color: Colors.white,
             ),
-            // _Middle1(currentNum: currentNum1, percentage: percentage, onChanged: onNumChanged1),
-            _Middle2(currentNum: currentNum2, onChanged: onNumChanged2),
-            _Bottom(),
-          ],
+            height: 300, // _Middle1 = 250 || _Middle2 = 450
+            width: 350,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _Top(
+                    onDateChanged: onDateChanged,
+                    selectedDay: duedate,
+                    initTitle: title,
+                    onTextChanged: onTextChanged,
+                    formKey: formKey,
+                  ),
+                  // _Middle1(currentNum: currentNum1, percentage: percentage, onChanged: onNumChanged1),
+                  _Middle2(currentNum: currentNum2, onChanged: onNumChanged2),
+                  _Bottom(
+                    title: this.title,
+                    dueDate: this.duedate,
+                    progress: this.percentage,
+                    onConfirmPressed: onConfirmPressed,
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  onTextChanged(String val) {
+    setState(() {
+      this.title = val;
+    });
+  }
+
+  onConfirmPressed() {
+    print("Create");
+    if (widget.selectedGoalId == null && formKey.currentState!.validate()) {
+      Navigator.of(context).pop();
+      return GetIt.I<LocalDatabase>().createGoal(GoalsCompanion(
+        title: Value(this.title),
+        dueDate: Value(this.duedate),
+        progress: Value(this.currentNum2),
+      ));
+    }
+    if (widget.selectedGoalId != null && formKey.currentState!.validate()) {
+      print("update");
+      Navigator.of(context).pop();
+      return GetIt.I<LocalDatabase>().updateGoalById(
+        widget.selectedGoalId!,
+        GoalsCompanion(
+          title: Value(this.title),
+          dueDate: Value(this.duedate),
+          progress: Value(this.currentNum2),
         ),
-      ),
-    );
+      );
+    }
   }
 
   onDateChanged(DateTime date) {
     setState(() {
-      selectedDay = date;
+      this.duedate = date;
     });
   }
 
@@ -63,7 +124,7 @@ class _GoalFormState extends State<GoalForm> {
   // _Middle2
   void onNumChanged2(int val) {
     setState(() {
-      currentNum2 = val;
+      this.currentNum2 = val;
     });
   }
 }
@@ -71,15 +132,22 @@ class _GoalFormState extends State<GoalForm> {
 class _Top extends StatelessWidget {
   final ValueChanged<DateTime> onDateChanged;
   final DateTime selectedDay;
+  final String initTitle;
+  final onTextChanged;
+  final formKey;
   const _Top({
     required this.onDateChanged,
     required this.selectedDay,
+    required this.initTitle,
+    required this.onTextChanged,
+    required this.formKey,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final DateTime dueDate = DateTime(2023, 12, 31);
+    final String selectedDayString =
+        "${selectedDay.year}-${selectedDay.month}-${selectedDay.day}";
 
     return Column(
       children: [
@@ -90,12 +158,24 @@ class _Top extends StatelessWidget {
               decoration:
                   BoxDecoration(borderRadius: BorderRadius.circular(20)),
               width: 120,
-              child: TextField(
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  hintText: "Name",
-                  hintStyle: TextStyle(
-                    color: Colors.black,
+              child: Form(
+                key: formKey,
+                child: TextFormField(
+                  validator: (String? val){
+                    if(val == null || val.isEmpty){
+                      return "Enter Something";
+                    } else {
+                      return null;
+                    }
+                  },
+                  onChanged: onTextChanged,
+                  initialValue: initTitle,
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    hintText: "Name",
+                    hintStyle: TextStyle(
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
@@ -115,7 +195,7 @@ class _Top extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Text(
-                "Due Date : ${selectedDay.year}-${selectedDay.month}-${selectedDay.day}",
+                "Due Date : ${selectedDayString}",
                 style: TextStyle(
                   color: Colors.black,
                 ),
@@ -231,7 +311,15 @@ class _Middle2 extends StatelessWidget {
 }
 
 class _Bottom extends StatelessWidget {
+  final String title;
+  final DateTime dueDate;
+  final int progress;
+  final onConfirmPressed;
   const _Bottom({
+    required this.title,
+    required this.dueDate,
+    required this.progress,
+    required this.onConfirmPressed,
     Key? key,
   }) : super(key: key);
 
@@ -256,7 +344,7 @@ class _Bottom extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: onConfirmPressed,
               child: Text(
                 "Confirm",
                 style: TextStyle(

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../component/goal_form.dart';
 
-void showGoalDialog(context) {
+void showGoalDialog(context, selectedGoalId) {
   showDialog(
     context: context,
     builder: (context) {
       return Dialog(
-        child: GoalForm(),
+        child: GoalForm(selectedGoalId: selectedGoalId,),
       );
     },
   );

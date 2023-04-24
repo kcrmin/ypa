@@ -29,7 +29,7 @@ class HomeBanner extends StatelessWidget {
             ),
             GestureDetector(
               onTap: (){
-                showGoalDialog(context);
+                showGoalDialog(context, null);
               },
               child: Text(
                 String.fromCharCode(Icons.add.codePoint),
