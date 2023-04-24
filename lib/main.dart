@@ -7,34 +7,29 @@ import 'package:ypa/screen/mood_screen.dart';
 import 'screen/home_screen.dart';
 
 const DEFAULT_COLORS = [
-"f44336",
-"ff9800",
-"4caf50",
-"00bcd4",
-"536dfe",
-"e91e63",
+  "f44336",
+  "ff9800",
+  "4caf50",
+  "00bcd4",
+  "536dfe",
+  "e91e63",
 ];
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final database = LocalDatabase();
 
-
   GetIt.I.registerSingleton<LocalDatabase>(database);
-
 
   final colors = await database.getColors();
 
-  if(colors.isEmpty) {
-    for(String hexCode in DEFAULT_COLORS){
-      await database.createColor(
-          MoodColorsCompanion(
-            // must wrap value with Value
-            color: Value(hexCode),
-          )
-      );
+  if (colors.isEmpty) {
+    for (String hexCode in DEFAULT_COLORS) {
+      await database.createColor(MoodColorsCompanion(
+        // must wrap value with Value
+        color: Value(hexCode),
+      ));
     }
   }
 
@@ -43,7 +38,7 @@ void main() async {
       theme: ThemeData(
         useMaterial3: true,
       ),
-      initialRoute: '/mood',
+      initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
         '/class': (context) => ClassroomScreen(),
