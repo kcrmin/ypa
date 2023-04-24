@@ -9,4 +9,7 @@ class Moods extends Table {
 
   // Color
   IntColumn get colorId => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }

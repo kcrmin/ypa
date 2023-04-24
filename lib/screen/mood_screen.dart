@@ -1,9 +1,11 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:ypa/component/banner.dart';
 import 'package:ypa/database/drift_database.dart';
 import 'package:ypa/layout/main_layout.dart';
+import 'package:ypa/model/mood_with_color.dart';
 import 'package:ypa/screen/todo_screen.dart';
 import 'package:ypa/component/pie_chart.dart';
 
@@ -28,21 +30,13 @@ class _MoodScreenState extends State<MoodScreen> {
     DateTime.now().month,
     DateTime.now().day,
   );
-  List<dailyMood> moodList = [
-    dailyMood(DateTime.utc(2023, 3, 16), '7887de'),
-    dailyMood(DateTime.utc(2023, 3, 9), '7887de'),
-    dailyMood(DateTime.utc(2023, 4, 16), '7887de'),
-    dailyMood(DateTime.utc(2023, 4, 20), '7887de'),
-    dailyMood(DateTime.utc(2023, 4, 16), '7887de'),
-    dailyMood(DateTime.utc(2023, 4, 22), '7887de'),
-    dailyMood(DateTime.utc(2023, 4, 1), '7887de'),
-  ];
+  int? selectedColorId;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<Mood>>(
-          future: _getMoodFromDatabase(),
+      body: StreamBuilder<List<MoodWithColor>>(
+          stream: GetIt.I<LocalDatabase>().getMoodWithColor(),
           builder: (context, snapshot) {
             List<int> colorIdList = [1, 1, 1, 3, 4, 5, 2, 6];
             List<DateTime> dateList = [
@@ -61,6 +55,7 @@ class _MoodScreenState extends State<MoodScreen> {
             //   colorIdList = snapshot.data!.map((e) => e.colorId).toList();
             //   dateList = snapshot.data!.map((e) => e.date).toList();
             // }
+
             return Column(
               children: [
                 Container(
@@ -74,7 +69,7 @@ class _MoodScreenState extends State<MoodScreen> {
                   onDaySelected: onDaySelected,
                   onPageChanged: onPageChanged,
                   onDoubleTap: onDoubleTap,
-                  moodList: getMoodList(colorIdList, dateList),
+                  moodList: snapshot.data!,
                 ),
                 const SizedBox(
                   height: 10,
@@ -87,6 +82,9 @@ class _MoodScreenState extends State<MoodScreen> {
                   colorIdList: colorIdList,
                   dateList: dateList,
                   focusedDay: focusedDay,
+                  colorSetter: onColorPick,
+                  selectedColor: selectedColorId,
+                  selectedDay: selectedDay,
                 ),
               ],
             );
@@ -94,8 +92,28 @@ class _MoodScreenState extends State<MoodScreen> {
     );
   }
 
-  Future<List<Mood>> _getMoodFromDatabase() async {
-    return await GetIt.I<LocalDatabase>().getMoods();
+  onColorPick(int id) {
+    setState(
+      () {
+        if (this.selectedColorId == null) {
+          print("Create");
+          GetIt.I<LocalDatabase>().createMood(
+            MoodsCompanion(
+              date: Value(selectedDay),
+              colorId: Value(id),
+            ),
+          );
+        }
+        this.selectedColorId = id;
+        GetIt.I<LocalDatabase>().updateMoodByDate(
+          selectedDay,
+          MoodsCompanion(
+            date: Value(selectedDay),
+            colorId: Value(id),
+          ),
+        );
+      },
+    );
   }
 
   onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -103,6 +121,7 @@ class _MoodScreenState extends State<MoodScreen> {
       this.selectedDay = selectedDay;
       this.focusedDay = selectedDay;
       //log('mood screen selected day: $selectedDay');
+      this.selectedColorId = null;
     });
   }
 
@@ -157,7 +176,7 @@ class _Top extends StatelessWidget {
   final onDaySelected;
   final onPageChanged;
   final GestureTapCallback onDoubleTap;
-  final moodList;
+  final List<MoodWithColor> moodList;
   const _Top(
       {required this.selectedDay,
       required this.focusedDay,
@@ -178,7 +197,6 @@ class _Top extends StatelessWidget {
         focusedDay: focusedDay,
         onDaySelected: onDaySelected,
         onPageChanged: onPageChanged,
-        moodList: moodList,
       ),
     );
   }
@@ -187,12 +205,18 @@ class _Top extends StatelessWidget {
 class _Bottom extends StatelessWidget {
   final List<int> colorIdList;
   final List<DateTime> dateList;
+  final DateTime selectedDay;
   DateTime focusedDay;
+  ColorSetter colorSetter;
+  int? selectedColor;
 
   _Bottom(
       {required this.colorIdList,
       required this.dateList,
       required this.focusedDay,
+      required this.colorSetter,
+      required this.selectedDay,
+      this.selectedColor,
       Key? key})
       : super(key: key);
 
@@ -206,14 +230,23 @@ class _Bottom extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Align(
             alignment: Alignment.topCenter,
-            child: MoodPieChart(
-                radius: 80,
-                angry_value: moodMap[1]!,
-                frustrated_value: moodMap[2]!,
-                happy_value: moodMap[3]!,
-                calm_value: moodMap[4]!,
-                sad_value: moodMap[5]!,
-                excited_value: moodMap[6]!),
+            child: FutureBuilder<Mood>(
+                future: GetIt.I<LocalDatabase>().getMoodByDate(selectedDay),
+                builder: (context, snapshot) {
+                  selectedColor = snapshot.data?.colorId;
+
+                  return MoodPieChart(
+                    radius: 80,
+                    angry_value: moodMap[1]!,
+                    frustrated_value: moodMap[2]!,
+                    happy_value: moodMap[3]!,
+                    calm_value: moodMap[4]!,
+                    sad_value: moodMap[5]!,
+                    excited_value: moodMap[6]!,
+                    colorSetter: colorSetter,
+                    selectedColor: selectedColor,
+                  );
+                }),
           )),
     );
   }

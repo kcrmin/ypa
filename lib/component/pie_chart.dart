@@ -4,6 +4,8 @@ import 'package:get_it/get_it.dart';
 import 'package:ypa/database/drift_database.dart';
 import 'package:ypa/util/string_color.dart';
 
+typedef ColorSetter = void Function(int id);
+
 class MoodPieChart extends StatelessWidget {
   final double radius;
   final double excited_value;
@@ -12,8 +14,10 @@ class MoodPieChart extends StatelessWidget {
   final double happy_value;
   final double frustrated_value;
   final double angry_value;
+  final ColorSetter colorSetter;
+  int? selectedColor;
 
-  const MoodPieChart({
+  MoodPieChart({
     required this.radius,
     required this.excited_value,
     required this.sad_value,
@@ -21,6 +25,8 @@ class MoodPieChart extends StatelessWidget {
     required this.happy_value,
     required this.frustrated_value,
     required this.angry_value,
+    required this.colorSetter,
+    this.selectedColor,
     Key? key,
   }) : super(key: key);
 
@@ -56,8 +62,12 @@ class MoodPieChart extends StatelessWidget {
           FutureBuilder<List<MoodColor>>(
               future: GetIt.I<LocalDatabase>().getColors(),
               builder: (context, snapshot) {
+
+
                 return _MoodPicker(
                   colors: snapshot.hasData ? snapshot.data! : [],
+                  colorSetter: colorSetter,
+                  selectedColor: selectedColor,
                 );
               }),
         ],
@@ -66,10 +76,16 @@ class MoodPieChart extends StatelessWidget {
   }
 }
 
+
+
 class _MoodPicker extends StatelessWidget {
   final List<MoodColor> colors;
-  const _MoodPicker({
+  final colorSetter;
+  int? selectedColor;
+  _MoodPicker({
     required this.colors,
+    required this.colorSetter,
+    this.selectedColor,
     Key? key,
   }) : super(key: key);
 
@@ -93,21 +109,31 @@ class _MoodPicker extends StatelessWidget {
           Wrap(
             spacing: 20,
             runSpacing: 16,
-            children:
-                colors.map((e) => renderColor(stringColor(e.color))).toList(),
+            children: colors
+                .map((e) => GestureDetector(
+                      onTap: () {
+                        colorSetter(e.id);
+                      },
+                      child: renderColor(stringColor(e.color), selectedColor == e.id),
+                    ))
+                .toList(),
           ),
         ],
       ),
     );
   }
 
-  Widget renderColor(Color color) {
+  Widget renderColor(Color color, bool selected) {
     return Container(
       width: 40,
       height: 40,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: color,
+        border: Border.all(
+          width: selected ? 3.0 : 0,
+          color: Colors.black38,
+        )
       ),
     );
   }

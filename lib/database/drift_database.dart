@@ -7,6 +7,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:ypa/model/mood_with_color.dart';
 
 // models modify
 import '../model/goal.dart';
@@ -47,8 +48,9 @@ class LocalDatabase extends _$LocalDatabase{
       into(moodColors).insert(data);
 
   /// select
-  Future<List<Mood>> getMoods() =>
-      select(moods).get();
+  // select all
+  Stream<List<Mood>> getMoods() =>
+      select(moods).watch();
 
   Future<List<Goal>> getGoals() =>
       select(goals).get();
@@ -58,6 +60,71 @@ class LocalDatabase extends _$LocalDatabase{
 
   Future<List<MoodColor>> getColors() =>
       select(moodColors).get();
+
+  // select by ID
+  Future<Mood> getMoodByDate(DateTime day) =>
+      (select(moods)..where((tbl) => tbl.date.equals(day))).getSingle();
+
+  Future<Goal> getGoalById(int id) =>
+      (select(goals)..where((tbl) => tbl.id.equals(id))).getSingle();
+
+  Future<Todo> getTodoById(int id) =>
+      (select(todos)..where((tbl) => tbl.id.equals(id))).getSingle();
+
+  // join
+  Stream<List<MoodWithColor>> getMoodWithColor() {
+    final query = select(moods).join([
+      innerJoin(moodColors, moodColors.id.equalsExp(moods.id)) // columnName is FK column name
+    ]);
+
+    // rows = all data, row = each data
+    return query.watch().map(
+          (rows) => rows.map(
+            (row) => MoodWithColor(
+          mood: row.readTable(moods),
+          moodColor: row.readTable(moodColors),
+        ),
+      ).toList(),
+    );
+  }
+
+  Stream<MoodWithColor> getMoodWithColorByDate(DateTime date) {
+    final query = select(moods).join([
+      innerJoin(moodColors, moodColors.id.equalsExp(moods.colorId)) // columnName is FK column name
+    ]);
+    
+    query.where(moods.date.equals(date));
+
+    return query.watch().map(
+          (rows) => rows.map(
+            (row) => MoodWithColor(
+          mood: row.readTable(moods),
+          moodColor: row.readTable(moodColors),
+        ),
+      ).toList()[0],
+    );
+  }
+
+  /// Update
+  Future<int> updateMoodByDate(DateTime day, MoodsCompanion data) =>
+      (update(moods)..where((tbl) => tbl.date.equals(day))).write(data);
+
+  Future<int> updateGoalById(int id, GoalsCompanion data) =>
+      (update(goals)..where((tbl) => tbl.id.equals(id))).write(data);
+
+  Future<int> updateTodoById(int id, TodosCompanion data) =>
+      (update(todos)..where((tbl) => tbl.id.equals(id))).write(data);
+
+  /// Remove
+  removeMoodById(int id) =>
+      (delete(moods)..where((tbl) => tbl.id.equals(id))).go();
+
+  removeGoalById(int id) =>
+      (delete(goals)..where((tbl) => tbl.id.equals(id))).go();
+
+  removeTodoById(int id) =>
+      (delete(todos)..where((tbl) => tbl.id.equals(id))).go();
+
 }
 
 // set DB location

@@ -28,14 +28,14 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, Goal> {
   late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
       'due_date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _completedMeta =
-      const VerificationMeta('completed');
+  static const VerificationMeta _progressMeta =
+      const VerificationMeta('progress');
   @override
-  late final GeneratedColumn<int> completed = GeneratedColumn<int>(
-      'completed', aliasedName, false,
+  late final GeneratedColumn<int> progress = GeneratedColumn<int>(
+      'progress', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
   @override
-  List<GeneratedColumn> get $columns => [id, title, dueDate, completed];
+  List<GeneratedColumn> get $columns => [id, title, dueDate, progress];
   @override
   String get aliasedName => _alias ?? 'goals';
   @override
@@ -60,11 +60,11 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, Goal> {
     } else if (isInserting) {
       context.missing(_dueDateMeta);
     }
-    if (data.containsKey('completed')) {
-      context.handle(_completedMeta,
-          completed.isAcceptableOrUnknown(data['completed']!, _completedMeta));
+    if (data.containsKey('progress')) {
+      context.handle(_progressMeta,
+          progress.isAcceptableOrUnknown(data['progress']!, _progressMeta));
     } else if (isInserting) {
-      context.missing(_completedMeta);
+      context.missing(_progressMeta);
     }
     return context;
   }
@@ -81,8 +81,8 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, Goal> {
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
       dueDate: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}due_date'])!,
-      completed: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}completed'])!,
+      progress: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}progress'])!,
     );
   }
 
@@ -96,19 +96,19 @@ class Goal extends DataClass implements Insertable<Goal> {
   final int id;
   final String title;
   final DateTime dueDate;
-  final int completed;
+  final int progress;
   const Goal(
       {required this.id,
       required this.title,
       required this.dueDate,
-      required this.completed});
+      required this.progress});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
     map['due_date'] = Variable<DateTime>(dueDate);
-    map['completed'] = Variable<int>(completed);
+    map['progress'] = Variable<int>(progress);
     return map;
   }
 
@@ -117,7 +117,7 @@ class Goal extends DataClass implements Insertable<Goal> {
       id: Value(id),
       title: Value(title),
       dueDate: Value(dueDate),
-      completed: Value(completed),
+      progress: Value(progress),
     );
   }
 
@@ -128,7 +128,7 @@ class Goal extends DataClass implements Insertable<Goal> {
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       dueDate: serializer.fromJson<DateTime>(json['dueDate']),
-      completed: serializer.fromJson<int>(json['completed']),
+      progress: serializer.fromJson<int>(json['progress']),
     );
   }
   @override
@@ -138,16 +138,16 @@ class Goal extends DataClass implements Insertable<Goal> {
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'dueDate': serializer.toJson<DateTime>(dueDate),
-      'completed': serializer.toJson<int>(completed),
+      'progress': serializer.toJson<int>(progress),
     };
   }
 
-  Goal copyWith({int? id, String? title, DateTime? dueDate, int? completed}) =>
+  Goal copyWith({int? id, String? title, DateTime? dueDate, int? progress}) =>
       Goal(
         id: id ?? this.id,
         title: title ?? this.title,
         dueDate: dueDate ?? this.dueDate,
-        completed: completed ?? this.completed,
+        progress: progress ?? this.progress,
       );
   @override
   String toString() {
@@ -155,13 +155,13 @@ class Goal extends DataClass implements Insertable<Goal> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('dueDate: $dueDate, ')
-          ..write('completed: $completed')
+          ..write('progress: $progress')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, title, dueDate, completed);
+  int get hashCode => Object.hash(id, title, dueDate, progress);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -169,39 +169,39 @@ class Goal extends DataClass implements Insertable<Goal> {
           other.id == this.id &&
           other.title == this.title &&
           other.dueDate == this.dueDate &&
-          other.completed == this.completed);
+          other.progress == this.progress);
 }
 
 class GoalsCompanion extends UpdateCompanion<Goal> {
   final Value<int> id;
   final Value<String> title;
   final Value<DateTime> dueDate;
-  final Value<int> completed;
+  final Value<int> progress;
   const GoalsCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.dueDate = const Value.absent(),
-    this.completed = const Value.absent(),
+    this.progress = const Value.absent(),
   });
   GoalsCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     required DateTime dueDate,
-    required int completed,
+    required int progress,
   })  : title = Value(title),
         dueDate = Value(dueDate),
-        completed = Value(completed);
+        progress = Value(progress);
   static Insertable<Goal> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<DateTime>? dueDate,
-    Expression<int>? completed,
+    Expression<int>? progress,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (dueDate != null) 'due_date': dueDate,
-      if (completed != null) 'completed': completed,
+      if (progress != null) 'progress': progress,
     });
   }
 
@@ -209,12 +209,12 @@ class GoalsCompanion extends UpdateCompanion<Goal> {
       {Value<int>? id,
       Value<String>? title,
       Value<DateTime>? dueDate,
-      Value<int>? completed}) {
+      Value<int>? progress}) {
     return GoalsCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       dueDate: dueDate ?? this.dueDate,
-      completed: completed ?? this.completed,
+      progress: progress ?? this.progress,
     );
   }
 
@@ -230,8 +230,8 @@ class GoalsCompanion extends UpdateCompanion<Goal> {
     if (dueDate.present) {
       map['due_date'] = Variable<DateTime>(dueDate.value);
     }
-    if (completed.present) {
-      map['completed'] = Variable<int>(completed.value);
+    if (progress.present) {
+      map['progress'] = Variable<int>(progress.value);
     }
     return map;
   }
@@ -242,7 +242,7 @@ class GoalsCompanion extends UpdateCompanion<Goal> {
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('dueDate: $dueDate, ')
-          ..write('completed: $completed')
+          ..write('progress: $progress')
           ..write(')'))
         .toString();
   }

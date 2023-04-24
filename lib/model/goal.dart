@@ -11,5 +11,5 @@ class Goals extends Table {
   DateTimeColumn get dueDate => dateTime()();
 
   // Progress
-  IntColumn get completed => integer()();
+  IntColumn get progress => integer()();
 }

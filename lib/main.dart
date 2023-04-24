@@ -25,7 +25,6 @@ void main() async {
   GetIt.I.registerSingleton<LocalDatabase>(database);
 
 
-
   final colors = await database.getColors();
 
   if(colors.isEmpty) {
@@ -38,7 +37,6 @@ void main() async {
       );
     }
   }
-
 
   runApp(
     MaterialApp(

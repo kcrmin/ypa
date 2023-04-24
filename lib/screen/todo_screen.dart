@@ -37,7 +37,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
     return Scaffold(
       body: 
         FutureBuilder<List<Mood>>(
-          future:_getMoodFromDatabase(),
+          future: null,
           builder: (context, snapshot) {
             List<int> colorIdList = [1,1,1,3,4,5,2,6];
             List<DateTime> dateList = [
@@ -58,7 +58,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
             return Center(
               child: 
                 FutureBuilder<List<Todo>>(
-                  future: _getTodosFromDatabase(),
+                  future: null,
                   builder: (context, snapshot) {
                     //List<todoItem> todos = [];
                     //  if(snapshot.hasData){
@@ -97,13 +97,9 @@ class _ToDoScreenState extends State<ToDoScreen> {
     );
   }
 
-  Future<List<Mood>> _getMoodFromDatabase() async {
-    return await GetIt.I<LocalDatabase>().getMoods();
-  }
 
-  Future<List<Todo>> _getTodosFromDatabase() async {
-    return await GetIt.I<LocalDatabase>().getTodos();
-  }
+
+
 
 
   onDaySelected(DateTime selectedDay, DateTime focusedDay) {
