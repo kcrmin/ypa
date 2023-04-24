@@ -44,6 +44,17 @@ class _MoodScreenState extends State<MoodScreen> {
             //   colorIdList = snapshot.data!.map((e) => e.colorId).toList();
             //   dateList = snapshot.data!.map((e) => e.date).toList();
             // }
+            // error
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("Something went wrong"),
+              );
+            }
+            // Future build ran for the first time and Loading
+            if (snapshot.connectionState != ConnectionState.none &&
+                !snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
 
             return Column(
               children: [
@@ -197,11 +208,14 @@ class _Bottom extends StatelessWidget {
         future: GetIt.I<LocalDatabase>().getMoodByFocusedDay(focusedDay),
         builder: (context, snapshot) {
           // error
-          if(snapshot.hasError){
-            return Center(child: Text("Something went wrong"),);
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Something went wrong"),
+            );
           }
           // Future build ran for the first time and Loading
-          if(snapshot.connectionState != ConnectionState.none && !snapshot.hasData){
+          if (snapshot.connectionState != ConnectionState.none &&
+              !snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
           List angry = [];
