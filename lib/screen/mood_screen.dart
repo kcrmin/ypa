@@ -38,17 +38,6 @@ class _MoodScreenState extends State<MoodScreen> {
       body: StreamBuilder<List<MoodWithColor>>(
           stream: GetIt.I<LocalDatabase>().getMoodWithColor(),
           builder: (context, snapshot) {
-            List<int> colorIdList = [1, 1, 1, 3, 4, 5, 2, 6];
-            List<DateTime> dateList = [
-              DateTime(2023, 4, 23),
-              DateTime(2023, 4, 24),
-              DateTime(2023, 4, 25),
-              DateTime(2023, 4, 26),
-              DateTime(2023, 3, 23),
-              DateTime(2023, 3, 15),
-              DateTime(2023, 4, 29),
-              DateTime(2023, 4, 20),
-            ];
             // if(snapshot.hasData){
             // List<int> colorIdList = [];
             // List<DateTime> dateList = [];
@@ -79,8 +68,6 @@ class _MoodScreenState extends State<MoodScreen> {
                   height: 10,
                 ),
                 _Bottom(
-                  colorIdList: colorIdList,
-                  dateList: dateList,
                   focusedDay: focusedDay,
                   colorSetter: onColorPick,
                   selectedColor: selectedColorId,
@@ -203,17 +190,13 @@ class _Top extends StatelessWidget {
 }
 
 class _Bottom extends StatelessWidget {
-  final List<int> colorIdList;
-  final List<DateTime> dateList;
   final DateTime selectedDay;
   DateTime focusedDay;
   ColorSetter colorSetter;
   int? selectedColor;
 
   _Bottom(
-      {required this.colorIdList,
-      required this.dateList,
-      required this.focusedDay,
+      {required this.focusedDay,
       required this.colorSetter,
       required this.selectedDay,
       this.selectedColor,
@@ -222,32 +205,90 @@ class _Bottom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<int> monthlyMood = getMoodForMonth(colorIdList, dateList, focusedDay);
-    Map<int, double> moodMap = getMoodPercentage(monthlyMood, focusedDay);
     return Expanded(
       flex: 1,
-      child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: FutureBuilder<Mood>(
-                future: GetIt.I<LocalDatabase>().getMoodByDate(selectedDay),
-                builder: (context, snapshot) {
-                  selectedColor = snapshot.data?.colorId;
+      child: FutureBuilder<List<Mood>>(
+        future: GetIt.I<LocalDatabase>().getMoodByFocusedDay(focusedDay),
+        builder: (context, snapshot) {
+          List angry = [];
+          List frustrated = [];
+          List happy = [];
+          List calm = [];
+          List sad = [];
+          List excited = [];
 
-                  return MoodPieChart(
-                    radius: 80,
-                    angry_value: moodMap[1]!,
-                    frustrated_value: moodMap[2]!,
-                    happy_value: moodMap[3]!,
-                    calm_value: moodMap[4]!,
-                    sad_value: moodMap[5]!,
-                    excited_value: moodMap[6]!,
-                    colorSetter: colorSetter,
-                    selectedColor: selectedColor,
-                  );
-                }),
-          )),
+          for (int i = 0; i < snapshot.data!.length; i++) {
+            switch (snapshot.data![i].colorId) {
+              case 1:
+                angry.add(snapshot.data![i].colorId);
+                break;
+              case 2:
+                frustrated.add(snapshot.data![i].colorId);
+                break;
+              case 3:
+                happy.add(snapshot.data![i].colorId);
+                break;
+              case 4:
+                calm.add(snapshot.data![i].colorId);
+                break;
+              case 5:
+                sad.add(snapshot.data![i].colorId);
+                break;
+              case 6:
+                excited.add(snapshot.data![i].colorId);
+                break;
+            }
+          }
+          int total = 0;
+
+          total += angry.length.toInt();
+          total += frustrated.length.toInt();
+          total += happy.length.toInt();
+          total += calm.length.toInt();
+          total += sad.length.toInt();
+          total += excited.length.toInt();
+
+          if (snapshot.data!.isNotEmpty) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: FutureBuilder<Mood>(
+                  future: GetIt.I<LocalDatabase>().getMoodByDate(selectedDay),
+                  builder: (context, snapshot) {
+                    selectedColor = snapshot.data?.colorId;
+
+                    return MoodPieChart(
+                      radius: 80,
+                      angry_value: (angry.length.toDouble() / total) * 100,
+                      frustrated_value:
+                      (frustrated.length.toDouble() / total) * 100,
+                      happy_value: (happy.length.toDouble() / total) * 100,
+                      calm_value: (calm.length.toDouble() / total) * 100,
+                      sad_value: (sad.length.toDouble() / total) * 100,
+                      excited_value: (excited.length.toDouble() / total) * 100,
+                      colorSetter: colorSetter,
+                      selectedColor: selectedColor,
+                    );
+                  },
+                ),
+              ),
+            );
+          } else {
+            return MoodPieChart(
+                radius: 80,
+                angry_value: 0,
+          frustrated_value:0,
+          happy_value: 0,
+          calm_value: 0,
+          sad_value: 0,
+          excited_value: 0,
+          colorSetter: colorSetter,
+          selectedColor: selectedColor,);
+          }
+
+        },
+      ),
     );
   }
 }
