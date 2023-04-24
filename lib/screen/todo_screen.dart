@@ -1,19 +1,22 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
+import 'package:ypa/component/calendar_bar.dart';
+import 'package:ypa/component/todo_item.dart';
 import 'package:ypa/data/todo_item.dart';
-import '../component/todoList.dart';
 import 'dart:developer';
 import 'package:ypa/database/drift_database.dart';
 import 'package:get_it/get_it.dart';
+import '../component/todo_card.dart';
 import '../data/daily_mood.dart';
+import '../util/string_color.dart';
 import 'mood_screen.dart';
 
 class ToDoScreen extends StatefulWidget {
   final DateTime selectedDay;
   final DateTime focusedDay;
-  const ToDoScreen({
-    required this.selectedDay,
-    required this.focusedDay,
-    Key? key}) : super(key: key);
+  const ToDoScreen(
+      {required this.selectedDay, required this.focusedDay, Key? key})
+      : super(key: key);
 
   @override
   State<ToDoScreen> createState() => _ToDoScreenState();
@@ -27,111 +30,146 @@ class _ToDoScreenState extends State<ToDoScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    selectedDay = widget.selectedDay;
-    focusedDay = widget.focusedDay;
+    this.selectedDay = widget.selectedDay;
+    this.focusedDay = widget.focusedDay;
   }
 
-
-
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      body: 
-        FutureBuilder<List<Mood>>(
-          future: null,
-          builder: (context, snapshot) {
-            List<int> colorIdList = [1,1,1,3,4,5,2,6];
-            List<DateTime> dateList = [
-            DateTime(2023,4,23),
-            DateTime(2023,4,24),
-            DateTime(2023,4,25),
-            DateTime(2023,4,26),
-            DateTime(2023,3,23),
-            DateTime(2023,3,15),
-            DateTime(2023,4,29),
-            DateTime(2023,4,20),];
-            // List<int> colorIdList = [];
-            // List<DateTime> dateList = [];
-            // if(snapshot.hasData){
-            //   colorIdList = snapshot.data!.map((e) => e.colorId).toList();
-            //   dateList = snapshot.data!.map((e) => e.date).toList();
-            // }
-            return Center(
-              child: 
-                FutureBuilder<List<Todo>>(
-                  future: null,
-                  builder: (context, snapshot) {
-                    //List<todoItem> todos = [];
-                    //  if(snapshot.hasData){
-                    //     List<DateTime>todoDate = snapshot.data!.map((e) => e.date).toList();
-                    //     List<bool>completedList = snapshot.data!.map((e) => e.completed).toList();
-                    //     List<String>title = snapshot.data!.map((e) => e.title).toList();
-                    //     for(int i=0;i<title.length;i++){
-                    //       todos.add(todoItem(todoDate[i], completedList[i], title[i]));
-                    //     }
-                    //   }
-                    List<todoItem>todos = [
-                      todoItem(DateTime.utc(2023, 4, 16), false, 'first todo'),
-                      todoItem(DateTime.utc(2023, 4, 16), false, 'second todo'),
-                      todoItem(DateTime.utc(2023, 4, 16), true, 'third todo'),
-                      todoItem(DateTime.utc(2023, 4, 16), true, 'fourth'),
-                      todoItem(DateTime.utc(2023, 4, 21), false, '5th'),
-                      todoItem(DateTime.utc(2023, 4, 21), false, '6th'),
-                      todoItem(DateTime.utc(2023, 3, 16), false, '7th'),
-                      todoItem(DateTime.utc(2023, 3, 16), false, '8th'),
-                    ];
-                    return TodoList(
-                      todos: todos,
-                      selectedDay: selectedDay,
-                      focusedDay:focusedDay,
-                      onDaySelected: onDaySelected,
-                      changeCompletionStatus: changeCompletionStatus,
-                      deleteTodo: deleteTodo,
-                      addTodo: addTodo,
-                      moodList: getMoodList(colorIdList, dateList),
-              );
-                  }
-                )
-            );
-          }
+      backgroundColor: Colors.grey[100],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70),
+        child: AppBar(
+          toolbarHeight: 90,
+          backgroundColor: stringColor("AEBDCA"),
+          title: const Text(
+            'To Do List',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 32.0,
+              color: Colors.white,
+            ),
+          ),
         ),
+      ),
+      body: Column(
+        children: [
+          SizedBox(height: 10),
+          CalendarBar(
+            selectedDay: selectedDay,
+            focusedDay: focusedDay,
+            onDaySelected: onDaySelected,
+            onPageChanged: onPageChanged(focusedDay),
+          ),
+          Expanded(
+            child: StreamBuilder<List<Todo>>(
+              key: ObjectKey(selectedDay),
+              stream: GetIt.I<LocalDatabase>().getTodoByDate(selectedDay),
+              builder: (context, snapshot) {
+                // error
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text("Something went wrong"),
+                  );
+                }
+                // Future build ran for the first time and Loading
+                if (snapshot.connectionState != ConnectionState.none &&
+                    !snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return ListView.separated(
+                  itemCount: snapshot.data!.length,
+                  separatorBuilder: (context, index) {
+                    return SizedBox(height: 10);
+                  },
+                  itemBuilder: (context, index) {
+                    return Dismissible(
+                      key: ObjectKey(snapshot.data![index].id),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (DismissDirection direction) {
+                        GetIt.I<LocalDatabase>()
+                            .removeTodoById(snapshot.data![index].id);
+                      },
+                      child: TodoContainer(
+                        currentId: snapshot.data![index].id,
+                        checked: snapshot.data![index].completed,
+                        content: snapshot.data![index].title,
+                        selectedDay: selectedDay,
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          )
+        ],
+      ),
+      // =====================================================================
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: stringColor("AEBDCA"),
+          child: Text(
+            String.fromCharCode(Icons.add.codePoint),
+            style: TextStyle(
+              inherit: false,
+              color: Colors.white,
+              fontSize: 27.0,
+              fontWeight: FontWeight.w800,
+              fontFamily: Icons.add.fontFamily,
+              package: Icons.add.fontPackage,
+            ),
+          ),
+          onPressed: () async {
+            final todo = await showDialog<String>(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: stringColor("F5EFE6"),
+                  title: const Text('New To Do'),
+                  content: TextField(
+                    autofocus: true,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter your Todo',
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF7895B2)),
+                      ),
+                    ),
+                    onSubmitted: (value) {
+                      Navigator.of(context).pop(value);
+                    },
+                    cursorColor: Color(0xFF7895B2),
+                  ),
+                );
+              },
+            );
+            if (todo != null) {
+              addTodo(todo!);
+            }
+          }),
     );
+    // ====================================================================
   }
-
-
-
-
-
 
   onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
       this.selectedDay = selectedDay;
-      this.focusedDay = selectedDay;
-    });
-  }
-  changeCompletionStatus(List<todoItem> todos, DateTime selectedDay, String todo){
-    setState(() {
-      for(int i = 0; i < todos.length; i++){
-        if(todos[i].day==selectedDay&&todos[i].title==todo){
-          todos[i].completed=!todos[i].completed;
-        }
-      }
-    });
-  }
-  deleteTodo(List<todoItem> todos, DateTime selectedDay, String todo){
-    setState(() {
-      
-       for(int i = 0; i < todos.length; i++){
-        if(todos[i].day==selectedDay&&todos[i].title==todo){
-          todos.removeAt(i);
-        }}
-
+      this.focusedDay = focusedDay;
     });
   }
 
-  addTodo(List<todoItem> todos, DateTime selectedDay, String todo){
-     setState(() {
-      todos.add(todoItem(selectedDay, false, todo));
+  onPageChanged(DateTime focusedDay) {
+    setState(() {
+      this.focusedDay = focusedDay;
     });
   }
-  
+
+  addTodo(String todo) {
+    print("create");
+    setState(() {
+      GetIt.I<LocalDatabase>().createTodo(TodosCompanion(
+        title: Value(todo!),
+        date: Value(selectedDay),
+        completed: Value(false),
+      ));
+    });
+  }
 }

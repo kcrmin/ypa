@@ -132,9 +132,12 @@ class _MoodScreenState extends State<MoodScreen> {
       //log('mood screen selected day: $selectedDay');
     });
     //show todo_screen
-    Navigator.of(context).push(MaterialPageRoute(
+    Navigator.of(context).push(
+      MaterialPageRoute(
         builder: (_) =>
-            ToDoScreen(selectedDay: selectedDay, focusedDay: focusedDay)));
+            ToDoScreen(selectedDay: selectedDay, focusedDay: focusedDay),
+      ),
+    );
   }
 }
 
@@ -193,6 +196,14 @@ class _Bottom extends StatelessWidget {
       child: FutureBuilder<List<Mood>>(
         future: GetIt.I<LocalDatabase>().getMoodByFocusedDay(focusedDay),
         builder: (context, snapshot) {
+          // error
+          if(snapshot.hasError){
+            return Center(child: Text("Something went wrong"),);
+          }
+          // Future build ran for the first time and Loading
+          if(snapshot.connectionState != ConnectionState.none && !snapshot.hasData){
+            return Center(child: CircularProgressIndicator());
+          }
           List angry = [];
           List frustrated = [];
           List happy = [];
@@ -279,4 +290,3 @@ class _Bottom extends StatelessWidget {
     );
   }
 }
-

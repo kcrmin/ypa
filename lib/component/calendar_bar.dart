@@ -9,11 +9,13 @@ class CalendarBar extends StatelessWidget {
   final DateTime? selectedDay;
   final DateTime focusedDay;
   final OnDaySelected? onDaySelected;
+  final onPageChanged;
 
   const CalendarBar({
     required this.selectedDay,
     required this.focusedDay,
     required this.onDaySelected,
+    required this.onPageChanged,
     //required this.todos,
     Key? key,
   }) : super(key: key);
@@ -101,6 +103,7 @@ class CalendarBar extends StatelessWidget {
 
       // store input data of date selected
       onDaySelected: onDaySelected,
+      onPageChanged: onPageChanged,
 
       // enable to select date and display
       selectedDayPredicate: (DateTime day) {

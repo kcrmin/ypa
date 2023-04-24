@@ -110,6 +110,14 @@ class _Bottom extends StatelessWidget {
         child: StreamBuilder<List<Goal>>(
           stream: GetIt.I<LocalDatabase>().getGoals(),
           builder: (context, snapshot) {
+            // error
+            if(snapshot.hasError){
+              return Center(child: Text("Something went wrong"),);
+            }
+            // Future build ran for the first time and Loading
+            if(snapshot.connectionState != ConnectionState.none && !snapshot.hasData){
+              return Center(child: CircularProgressIndicator());
+            }
             return ListView.separated(
               itemCount: snapshot.data!.length,
               separatorBuilder: (context, index) {
