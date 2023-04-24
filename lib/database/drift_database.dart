@@ -121,8 +121,8 @@ class LocalDatabase extends _$LocalDatabase {
       (update(todos)..where((tbl) => tbl.id.equals(id))).write(data);
 
   /// Remove
-  removeMoodById(int id) =>
-      (delete(moods)..where((tbl) => tbl.id.equals(id))).go();
+  removeMoodByDate(DateTime day) =>
+      (delete(moods)..where((tbl) => tbl.date.equals(day))).go();
 
   removeGoalById(int id) =>
       (delete(goals)..where((tbl) => tbl.id.equals(id))).go();

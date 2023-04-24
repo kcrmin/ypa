@@ -8,7 +8,7 @@ class Goals extends Table {
   TextColumn get title => text()();
 
   // DueDate
-  DateTimeColumn get dueDate => dateTime()();
+  DateTimeColumn get dueDate => dateTime().unique()();
 
   // Progress
   IntColumn get progress => integer()();

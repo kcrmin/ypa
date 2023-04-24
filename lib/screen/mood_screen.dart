@@ -72,11 +72,19 @@ class _MoodScreenState extends State<MoodScreen> {
                   colorSetter: onColorPick,
                   selectedColor: selectedColorId,
                   selectedDay: selectedDay,
+                  onDoubleTap2: onDoubleTap2,
                 ),
               ],
             );
           }),
     );
+  }
+
+  onDoubleTap2() {
+    setState(() {
+      GetIt.I<LocalDatabase>().removeMoodByDate(selectedDay);
+    });
+    onDaySelected(selectedDay, focusedDay);
   }
 
   onColorPick(int id) {
@@ -130,33 +138,6 @@ class _MoodScreenState extends State<MoodScreen> {
   }
 }
 
-List<dailyMood> getMoodList(List<int> colorIdList, List<DateTime> dateList) {
-  List<dailyMood> result = [];
-  for (int i = 0; i < dateList.length; i++) {
-    switch (colorIdList[i]) {
-      case 1:
-        result.add(dailyMood(dateList[i], 'f44336'));
-        break;
-      case 2:
-        result.add(dailyMood(dateList[i], 'ff9800'));
-        break;
-      case 3:
-        result.add(dailyMood(dateList[i], '4caf50'));
-        break;
-      case 4:
-        result.add(dailyMood(dateList[i], '00bcd4'));
-        break;
-      case 5:
-        result.add(dailyMood(dateList[i], '536dfe'));
-        break;
-      case 6:
-        result.add(dailyMood(dateList[i], 'e91e63'));
-        break;
-    }
-  }
-  return result;
-}
-
 class _Top extends StatelessWidget {
   final DateTime selectedDay;
   final DateTime focusedDay;
@@ -191,12 +172,14 @@ class _Top extends StatelessWidget {
 
 class _Bottom extends StatelessWidget {
   final DateTime selectedDay;
+  final onDoubleTap2;
   DateTime focusedDay;
   ColorSetter colorSetter;
   int? selectedColor;
 
   _Bottom(
       {required this.focusedDay,
+      required this.onDoubleTap2,
       required this.colorSetter,
       required this.selectedDay,
       this.selectedColor,
@@ -262,13 +245,15 @@ class _Bottom extends StatelessWidget {
                       radius: 80,
                       angry_value: (angry.length.toDouble() / total) * 100,
                       frustrated_value:
-                      (frustrated.length.toDouble() / total) * 100,
+                          (frustrated.length.toDouble() / total) * 100,
                       happy_value: (happy.length.toDouble() / total) * 100,
                       calm_value: (calm.length.toDouble() / total) * 100,
                       sad_value: (sad.length.toDouble() / total) * 100,
                       excited_value: (excited.length.toDouble() / total) * 100,
                       colorSetter: colorSetter,
                       selectedColor: selectedColor,
+                      selectedDay: selectedDay,
+                      onDoubleTap: onDoubleTap2,
                     );
                   },
                 ),
@@ -276,72 +261,22 @@ class _Bottom extends StatelessWidget {
             );
           } else {
             return MoodPieChart(
-                radius: 80,
-                angry_value: 0,
-          frustrated_value:0,
-          happy_value: 0,
-          calm_value: 0,
-          sad_value: 0,
-          excited_value: 0,
-          colorSetter: colorSetter,
-          selectedColor: selectedColor,);
+              radius: 80,
+              angry_value: 0,
+              frustrated_value: 0,
+              happy_value: 0,
+              calm_value: 0,
+              sad_value: 0,
+              excited_value: 0,
+              colorSetter: colorSetter,
+              selectedColor: selectedColor,
+              selectedDay: selectedDay,
+              onDoubleTap: onDoubleTap2,
+            );
           }
-
         },
       ),
     );
   }
 }
 
-List<int> getMoodForMonth(
-    List<int> colorIdList, List<DateTime> dateList, DateTime focusedDay) {
-  List<int> result = [];
-  int month = focusedDay.month;
-  for (int i = 0; i < dateList.length; i++) {
-    if (dateList[i].month == month) {
-      result.add(colorIdList[i]);
-    }
-  }
-  return result;
-}
-
-Map<int, double> getMoodPercentage(List<int> monthlyMood, DateTime focusedDay) {
-  int angry_value = 0;
-  int frustrated_value = 0;
-  int calm_value = 0;
-  int sad_value = 0;
-  int excited_value = 0;
-  int happy_value = 0;
-  Map<int, double> result = {
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-  };
-  for (int i = 0; i < monthlyMood.length; i++) {
-    if (monthlyMood[i] == 1) {
-      angry_value++;
-    } else if (monthlyMood[i] == 2) {
-      frustrated_value++;
-    } else if (monthlyMood[i] == 3) {
-      happy_value++;
-    } else if (monthlyMood[i] == 4) {
-      calm_value++;
-    } else if (monthlyMood[i] == 5) {
-      sad_value++;
-    } else if (monthlyMood[i] == 6) {
-      excited_value++;
-    }
-  }
-  if (monthlyMood.isNotEmpty) {
-    result.update(1, (value) => 100 * angry_value / monthlyMood.length);
-    result.update(2, (value) => 100 * frustrated_value / monthlyMood.length);
-    result.update(3, (value) => 100 * happy_value / monthlyMood.length);
-    result.update(4, (value) => 100 * calm_value / monthlyMood.length);
-    result.update(5, (value) => 100 * sad_value / monthlyMood.length);
-    result.update(6, (value) => 100 * excited_value / monthlyMood.length);
-  }
-  return result;
-}

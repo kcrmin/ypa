@@ -15,7 +15,10 @@ class MoodPieChart extends StatelessWidget {
   final double frustrated_value;
   final double angry_value;
   final ColorSetter colorSetter;
+  final DateTime selectedDay;
+  final onDoubleTap;
   int? selectedColor;
+
 
   MoodPieChart({
     required this.radius,
@@ -26,6 +29,8 @@ class MoodPieChart extends StatelessWidget {
     required this.frustrated_value,
     required this.angry_value,
     required this.colorSetter,
+    required this.selectedDay,
+    required this.onDoubleTap,
     this.selectedColor,
     Key? key,
   }) : super(key: key);
@@ -62,12 +67,12 @@ class MoodPieChart extends StatelessWidget {
           FutureBuilder<List<MoodColor>>(
               future: GetIt.I<LocalDatabase>().getColors(),
               builder: (context, snapshot) {
-
-
                 return _MoodPicker(
                   colors: snapshot.hasData ? snapshot.data! : [],
                   colorSetter: colorSetter,
                   selectedColor: selectedColor,
+                  selectedDay: selectedDay,
+                  onDoubleTap: onDoubleTap,
                 );
               }),
         ],
@@ -76,16 +81,18 @@ class MoodPieChart extends StatelessWidget {
   }
 }
 
-
-
 class _MoodPicker extends StatelessWidget {
   final List<MoodColor> colors;
   final colorSetter;
   int? selectedColor;
+  final onDoubleTap;
+  final DateTime selectedDay;
   _MoodPicker({
     required this.colors,
     required this.colorSetter,
     this.selectedColor,
+    required this.selectedDay,
+    required this.onDoubleTap,
     Key? key,
   }) : super(key: key);
 
@@ -111,10 +118,12 @@ class _MoodPicker extends StatelessWidget {
             runSpacing: 16,
             children: colors
                 .map((e) => GestureDetector(
+                      onDoubleTap: onDoubleTap,
                       onTap: () {
                         colorSetter(e.id);
                       },
-                      child: renderColor(stringColor(e.color), selectedColor == e.id),
+                      child: renderColor(
+                          stringColor(e.color), selectedColor == e.id),
                     ))
                 .toList(),
           ),
@@ -128,13 +137,12 @@ class _MoodPicker extends StatelessWidget {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color,
-        border: Border.all(
-          width: selected ? 3.0 : 0,
-          color: Colors.black38,
-        )
-      ),
+          shape: BoxShape.circle,
+          color: color,
+          border: Border.all(
+            width: selected ? 3.0 : 0,
+            color: Colors.black38,
+          )),
     );
   }
 }

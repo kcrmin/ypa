@@ -27,7 +27,9 @@ class $GoalsTable extends Goals with TableInfo<$GoalsTable, Goal> {
   @override
   late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
       'due_date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
   static const VerificationMeta _progressMeta =
       const VerificationMeta('progress');
   @override

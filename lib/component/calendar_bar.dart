@@ -9,13 +9,11 @@ class CalendarBar extends StatelessWidget {
   final DateTime? selectedDay;
   final DateTime focusedDay;
   final OnDaySelected? onDaySelected;
-  final List<dailyMood> moodList;
 
   const CalendarBar({
     required this.selectedDay,
     required this.focusedDay,
     required this.onDaySelected,
-     required this.moodList,
     //required this.todos,
     Key? key,
   }) : super(key: key);
