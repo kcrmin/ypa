@@ -163,16 +163,17 @@ class _Top extends StatelessWidget {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
+              width: 315,
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                width: 120,
                 child: CustomText(onTextSaved: onTextSaved, title: initTitle)),
           ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -195,7 +196,6 @@ class _Top extends StatelessWidget {
                         color: Colors.white,
                         height: MediaQuery.of(context).size.height / 3,
                         child: CupertinoDatePicker(
-                          minimumDate: DateTime.now(),
                           onDateTimeChanged: onDateChanged,
                           mode: CupertinoDatePickerMode.date,
                         ),

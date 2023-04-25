@@ -20,9 +20,12 @@ class CustomText extends StatelessWidget {
       },
       initialValue: title ?? "Hi",
       onSaved: onTextSaved,
-      textAlign: TextAlign.center,
+      textAlign: TextAlign.left,
       decoration: InputDecoration(
-        hintText: "Name",
+        prefixIcon: Text("   Goal: ", style: TextStyle(
+          fontSize: 18.0,
+        ),),
+        prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
         hintStyle: TextStyle(
           color: Colors.black,
         ),
