@@ -2,12 +2,10 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter/material.dart';
 import 'package:ypa/component/calendar_bar.dart';
 import 'package:ypa/component/todo_item.dart';
-import 'package:ypa/data/todo_item.dart';
 import 'dart:developer';
 import 'package:ypa/database/drift_database.dart';
 import 'package:get_it/get_it.dart';
 import '../component/todo_card.dart';
-import '../data/daily_mood.dart';
 import '../util/string_color.dart';
 import 'mood_screen.dart';
 
@@ -79,28 +77,39 @@ class _ToDoScreenState extends State<ToDoScreen> {
                     !snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
                 }
-                return ListView.separated(
-                  itemCount: snapshot.data!.length,
-                  separatorBuilder: (context, index) {
-                    return SizedBox(height: 10);
-                  },
-                  itemBuilder: (context, index) {
-                    return Dismissible(
-                      key: ObjectKey(snapshot.data![index].id),
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (DismissDirection direction) {
-                        GetIt.I<LocalDatabase>()
-                            .removeTodoById(snapshot.data![index].id);
-                      },
-                      child: TodoContainer(
-                        currentId: snapshot.data![index].id,
-                        checked: snapshot.data![index].completed,
-                        content: snapshot.data![index].title,
-                        selectedDay: selectedDay,
-                      ),
-                    );
-                  },
-                );
+                return snapshot.hasData && snapshot.data!.isEmpty == false
+                    ? ListView.separated(
+                        itemCount: snapshot.data!.length,
+                        separatorBuilder: (context, index) {
+                          return SizedBox(height: 1);
+                        },
+                        itemBuilder: (context, index) {
+                          return Dismissible(
+                            key: ObjectKey(snapshot.data![index].id),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (DismissDirection direction) {
+                              GetIt.I<LocalDatabase>()
+                                  .removeTodoById(snapshot.data![index].id);
+                            },
+                            child: TodoContainer(
+                              currentId: snapshot.data![index].id,
+                              checked: snapshot.data![index].completed,
+                              content: snapshot.data![index].title,
+                              selectedDay: selectedDay,
+                            ),
+                          );
+                        },
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Add To-Do", style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 24.0,
+                          ),),
+                          SizedBox(height: 130,)
+                        ]
+                      );
               },
             ),
           )

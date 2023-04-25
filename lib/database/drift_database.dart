@@ -54,7 +54,7 @@ class LocalDatabase extends _$LocalDatabase {
   Future<List<Todo>> getTodos() => select(todos).get();
 
   Stream<List<Todo>> getTodoByDate(DateTime day) =>
-      (select(todos)..where((tbl) => tbl.date.equals(day))).watch();
+      (select(todos)..where((tbl) => tbl.date.equals(day))..orderBy([(t) => OrderingTerm.desc(t.completed)])).watch();
 
   Future<List<MoodColor>> getColors() => select(moodColors).get();
 

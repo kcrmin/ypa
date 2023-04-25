@@ -40,9 +40,9 @@ class MoodPieChart extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width - 16,
       child: Column(
+        mainAxisSize: MainAxisSize.max,
         children: [
           Container(
-            height: 270,
             child: Stack(
               children: [
                 Align(

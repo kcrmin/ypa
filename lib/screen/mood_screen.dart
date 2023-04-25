@@ -10,7 +10,6 @@ import 'package:ypa/screen/todo_screen.dart';
 import 'package:ypa/component/pie_chart.dart';
 
 import '../component/calendar.dart';
-import '../data/daily_mood.dart';
 
 class MoodScreen extends StatefulWidget {
   const MoodScreen({Key? key}) : super(key: key);
@@ -267,7 +266,7 @@ class _Bottom extends StatelessWidget {
                     selectedColor = snapshot.data?.colorId;
 
                     return MoodPieChart(
-                      radius: 80,
+                      radius: 60,
                       angry_value: (angry.length.toDouble() / total) * 100,
                       frustrated_value:
                           (frustrated.length.toDouble() / total) * 100,

@@ -11,7 +11,6 @@ import 'package:ypa/util/goal_dialog.dart';
 import 'package:ypa/component/pie_chart.dart';
 
 import '../component/calendar.dart';
-import '../data/daily_mood.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,15 +22,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
-  List<dailyMood> moodList = [
-    dailyMood(DateTime.utc(2023, 3, 16), '7887de'),
-    dailyMood(DateTime.utc(2023, 3, 9), '7887de'),
-    dailyMood(DateTime.utc(2023, 4, 16), '7887de'),
-    dailyMood(DateTime.utc(2023, 4, 20), '7887de'),
-    dailyMood(DateTime.utc(2023, 4, 16), '7887de'),
-    dailyMood(DateTime.utc(2023, 4, 22), '7887de'),
-    dailyMood(DateTime.utc(2023, 4, 1), '7887de'),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           HomeBanner(title: "Goal"),
           SizedBox(
-            height: 10,
+            height: 4,
           ),
           _Bottom(),
         ],
@@ -87,11 +77,13 @@ class _Top extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         Navigator.of(context).pushNamed('/mood');
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12.0,
+        ),
         child: DateCard(),
       ),
     );
@@ -99,55 +91,59 @@ class _Top extends StatelessWidget {
 }
 
 class _Bottom extends StatelessWidget {
-  const _Bottom({
-    Key? key}) : super(key: key);
+  const _Bottom({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(12.0),
         child: StreamBuilder<List<Goal>>(
-          stream: GetIt.I<LocalDatabase>().getGoals(),
-          builder: (context, snapshot) {
-            // error
-            if(snapshot.hasError){
-              return Center(child: Text("Something went wrong"),);
-            }
-            // Future build ran for the first time and Loading
-            if(snapshot.connectionState != ConnectionState.none && !snapshot.hasData){
-              return Center(child: CircularProgressIndicator());
-            }
-            return ListView.separated(
-              itemCount: snapshot.data!.length,
-              separatorBuilder: (context, index) {
-                return SizedBox(
-                  height: 8.0,
+            stream: GetIt.I<LocalDatabase>().getGoals(),
+            builder: (context, snapshot) {
+              // error
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text("Something went wrong"),
                 );
-              },
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    showGoalDialog(context, snapshot.data![index].id);
-                  },
-                  child: Dismissible(
-                    key: ObjectKey(snapshot.data![index].id),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (DismissDirection direction){
-                      GetIt.I<LocalDatabase>().removeGoalById(snapshot.data![index].id);
+              }
+              // Future build ran for the first time and Loading
+              if (snapshot.connectionState != ConnectionState.none &&
+                  !snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return ListView.separated(
+                itemCount: snapshot.data!.length,
+                separatorBuilder: (context, index) {
+                  return SizedBox(
+                    height: 12.0,
+                  );
+                },
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      showGoalDialog(context, snapshot.data![index].id);
                     },
-                    child: GoalCard(
-                      id: snapshot.data![index].id,
-                      name: snapshot.data![index].title,
-                      progress: snapshot.data![index].progress,
-                      dueDate: snapshot.data![index].dueDate,
+                    child: Dismissible(
+                      key: ObjectKey(snapshot.data![index].id),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (DismissDirection direction) {
+                        GetIt.I<LocalDatabase>()
+                            .removeGoalById(snapshot.data![index].id);
+                      },
+                      child: GoalCard(
+                        id: snapshot.data![index].id,
+                        name: snapshot.data![index].title,
+                        progress: snapshot.data![index].progress,
+                        dueDate: snapshot.data![index].dueDate,
+                      ),
                     ),
-                  ),
-                );
-              },
-            );
-          }
-        ),
+                  );
+                },
+              );
+            }),
       ),
     );
   }

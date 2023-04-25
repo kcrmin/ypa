@@ -23,7 +23,7 @@ class TodoContainer extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      margin: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 9.0),
+      margin: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 5.0),
       child: CheckboxListTile(
         checkboxShape: const CircleBorder(eccentricity: 0.9),
         contentPadding: const EdgeInsets.all(3),

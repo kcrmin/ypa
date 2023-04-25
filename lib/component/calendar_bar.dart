@@ -1,8 +1,6 @@
 //import 'package:calendar_test/const/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import '../data/daily_mood.dart';
 import '../util/string_color.dart';
 
 class CalendarBar extends StatelessWidget {
@@ -38,33 +36,27 @@ class CalendarBar extends StatelessWidget {
       firstDay: DateTime(1800),
       lastDay: DateTime(3000),
       calendarFormat: CalendarFormat.week,
-      
 
       // custom builder
       calendarBuilders: CalendarBuilders(
-         markerBuilder: (context, day, todos) =>  
-
-
-            Container(                 
-              width: 20,
-              height: 10,
-              alignment: Alignment.bottomLeft,
-              decoration: BoxDecoration(
-               color: (day.month==focusedDay.month)&(hasMood(moodList,day)!=-1)?stringColor(moodList[hasMood(moodList,day)].color):Colors.transparent,
-              borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          
-        
+        markerBuilder: (context, day, todos) => Container(
+          width: 20,
+          height: 10,
+          alignment: Alignment.bottomLeft,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
       ),
-
 
       calendarStyle: CalendarStyle(
         isTodayHighlighted: true,
         markersAlignment: Alignment.bottomCenter,
 
         todayDecoration: BoxDecoration(
-            color: stringColor("7895B2"), borderRadius: BorderRadius.circular(6.0)),
+            color: stringColor("7895B2"),
+            borderRadius: BorderRadius.circular(6.0)),
 
         // DATE BOX DECORATION
         // weekdays
@@ -116,14 +108,5 @@ class CalendarBar extends StatelessWidget {
             day.day == selectedDay!.day;
       },
     );
-  }
-    //returns the index of dailyMood if mood is recorded for day, else return -1
-  int hasMood (List<dailyMood> moodList, DateTime day) {
-    for(int i=0; i<moodList.length; i++){
-      if((moodList[i].day.month==day.month)&(moodList[i].day.day==day.day)){
-        return i;
-      }
-    }
-    return -1;
   }
 }

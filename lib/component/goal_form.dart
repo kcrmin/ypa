@@ -78,6 +78,7 @@ class _GoalFormState extends State<GoalForm> {
                       initTitle: title ?? "",
                       onTextSaved: onTextSaved,
                       formKey: formKey,
+                      dueDate: dueDate,
                     ),
                     // _Middle1(currentNum: currentNum1, percentage: percentage, onChanged: onNumChanged1),
                     _Middle2(currentNum: progress, onChanged: onNumChanged2),
@@ -143,6 +144,7 @@ class _GoalFormState extends State<GoalForm> {
 class _Top extends StatelessWidget {
   final ValueChanged<DateTime> onDateChanged;
   final DateTime selectedDay;
+  final DateTime dueDate;
   final String initTitle;
   final onTextSaved;
   final formKey;
@@ -152,6 +154,7 @@ class _Top extends StatelessWidget {
     required this.initTitle,
     required this.onTextSaved,
     required this.formKey,
+    required this.dueDate,
     Key? key,
   }) : super(key: key);
 
@@ -161,15 +164,19 @@ class _Top extends StatelessWidget {
         "${selectedDay.year}-${selectedDay.month}-${selectedDay.day}";
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            Container(
-              width: 315,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                child: CustomText(onTextSaved: onTextSaved, title: initTitle)),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                  child: CustomText(onTextSaved: onTextSaved, title: initTitle)),
+            ),
           ],
         ),
         Row(
@@ -196,6 +203,7 @@ class _Top extends StatelessWidget {
                         color: Colors.white,
                         height: MediaQuery.of(context).size.height / 3,
                         child: CupertinoDatePicker(
+                          initialDateTime: dueDate,
                           onDateTimeChanged: onDateChanged,
                           mode: CupertinoDatePickerMode.date,
                         ),

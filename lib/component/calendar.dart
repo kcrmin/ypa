@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:ypa/data/daily_mood.dart';
 import 'package:ypa/model/mood_with_color.dart';
 import 'package:ypa/util/string_color.dart';
 
@@ -71,8 +70,11 @@ class _CalendarState extends State<Calendar> {
                   height: 10,
                   alignment: Alignment.bottomLeft,
                   decoration: BoxDecoration(
-
-                    color: (snapshot.hasData && day.toUtc().month == widget.focusedDay.toUtc().month) ? stringColor(snapshot.data!.moodColor.color): Colors.transparent,
+                    color: (snapshot.hasData &&
+                            day.toUtc().month ==
+                                widget.focusedDay.toUtc().month)
+                        ? stringColor(snapshot.data!.moodColor.color)
+                        : Colors.transparent,
 
                     //retrieve color of a specific day for moodMap, do not display color for not focused month or when key(date) not contained in the map
                     // color: stringColor(GetIt.I<LocalDatabase>().getMoodWithColorByDate(day).map((event) => event.moodColor.color).toString()),
@@ -153,16 +155,5 @@ class _CalendarState extends State<Calendar> {
             day.day == widget.selectedDay!.day;
       },
     );
-  }
-
-  //returns the index of dailyMood if mood is recorded for day, else return -1
-  int hasMood(List<dailyMood> moodList, DateTime day) {
-    for (int i = 0; i < moodList.length; i++) {
-      if ((moodList[i].day.month == day.month) &
-          (moodList[i].day.day == day.day)) {
-        return i;
-      }
-    }
-    return -1;
   }
 }
