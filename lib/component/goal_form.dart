@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ypa/component/custom_text.dart';
 import 'package:ypa/database/drift_database.dart';
 
 class GoalForm extends StatefulWidget {
   final int? selectedGoalId;
+
   const GoalForm({
     this.selectedGoalId,
     Key? key,
@@ -18,31 +20,43 @@ class GoalForm extends StatefulWidget {
 
 class _GoalFormState extends State<GoalForm> {
   final GlobalKey<FormState> formKey = GlobalKey();
-  int? selectedGoalIdNum;
-  String title = "";
-  DateTime duedate = DateTime.now();
-
-  // _Middle1
-  double currentNum1 = 0;
-  int percentage = 0;
-
-  // _Middle2
-  int currentNum2 = 0;
+  int? selectedGoalId;
+  String? title;
+  int progress = 0;
+  DateTime dueDate = DateTime.utc(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
 
   @override
   Widget build(BuildContext context) {
+    print("HI");
+
     return FutureBuilder<Goal>(
         future: widget.selectedGoalId == null
             ? null
-            : GetIt.I<LocalDatabase>().getGoalById(widget.selectedGoalId!),
+            : GetIt.I<LocalDatabase>()
+                .getGoalByIdFuture(widget.selectedGoalId!),
         builder: (context, snapshot) {
-          if (snapshot.hasData && this.selectedGoalIdNum == null) {
-            this.selectedGoalIdNum = widget.selectedGoalId;
-            this.duedate = snapshot.data!.dueDate;
-            this.currentNum2 = snapshot.data!.progress;
-            this.title = snapshot.data!.title;
-          };
-
+          // error
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Something went wrong"),
+            );
+          }
+          // Future build ran for the first time and Loading
+          if (snapshot.connectionState != ConnectionState.none &&
+              !snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          // When there's Future value but variables are never been set
+          if (snapshot.hasData && title == null) {
+            title = snapshot.data!.title;
+            progress = snapshot.data!.progress;
+            dueDate = snapshot.data!.dueDate;
+            selectedGoalId = snapshot.data!.id;
+          }
           return Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.0),
@@ -53,56 +67,60 @@ class _GoalFormState extends State<GoalForm> {
             width: 350,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _Top(
-                    onDateChanged: onDateChanged,
-                    selectedDay: duedate,
-                    initTitle: title,
-                    onTextChanged: onTextChanged,
-                    formKey: formKey,
-                  ),
-                  // _Middle1(currentNum: currentNum1, percentage: percentage, onChanged: onNumChanged1),
-                  _Middle2(currentNum: currentNum2, onChanged: onNumChanged2),
-                  _Bottom(
-                    title: this.title,
-                    dueDate: this.duedate,
-                    progress: this.percentage,
-                    onConfirmPressed: onConfirmPressed,
-                  ),
-                ],
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _Top(
+                      onDateChanged: onDateChanged,
+                      selectedDay: dueDate,
+                      initTitle: title ?? "",
+                      onTextSaved: onTextSaved,
+                      formKey: formKey,
+                    ),
+                    // _Middle1(currentNum: currentNum1, percentage: percentage, onChanged: onNumChanged1),
+                    _Middle2(currentNum: progress, onChanged: onNumChanged2),
+                    _Bottom(
+                      dueDate: this.dueDate,
+                      progress: this.progress,
+                      onConfirmPressed: onConfirmPressed,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
         });
   }
 
-  onTextChanged(String val) {
+  onTextSaved(String? val) {
     setState(() {
       this.title = val;
     });
   }
 
   onConfirmPressed() {
-    print("Create");
     if (widget.selectedGoalId == null && formKey.currentState!.validate()) {
+      print("Create");
+      formKey.currentState!.save();
       Navigator.of(context).pop();
       return GetIt.I<LocalDatabase>().createGoal(GoalsCompanion(
-        title: Value(this.title),
-        dueDate: Value(this.duedate),
-        progress: Value(this.currentNum2),
+        title: Value(this.title!),
+        dueDate: Value(this.dueDate),
+        progress: Value(this.progress),
       ));
     }
     if (widget.selectedGoalId != null && formKey.currentState!.validate()) {
       print("update");
+      formKey.currentState!.save();
       Navigator.of(context).pop();
       return GetIt.I<LocalDatabase>().updateGoalById(
         widget.selectedGoalId!,
         GoalsCompanion(
-          title: Value(this.title),
-          dueDate: Value(this.duedate),
-          progress: Value(this.currentNum2),
+          title: Value(this.title!),
+          dueDate: Value(this.dueDate),
+          progress: Value(this.progress),
         ),
       );
     }
@@ -110,21 +128,14 @@ class _GoalFormState extends State<GoalForm> {
 
   onDateChanged(DateTime date) {
     setState(() {
-      this.duedate = date;
-    });
-  }
-
-  // _Middle1
-  void onNumChanged1(double val) {
-    setState(() {
-      currentNum1 = val;
+      this.dueDate = date;
     });
   }
 
   // _Middle2
   void onNumChanged2(int val) {
     setState(() {
-      this.currentNum2 = val;
+      this.progress = val;
     });
   }
 }
@@ -133,13 +144,13 @@ class _Top extends StatelessWidget {
   final ValueChanged<DateTime> onDateChanged;
   final DateTime selectedDay;
   final String initTitle;
-  final onTextChanged;
+  final onTextSaved;
   final formKey;
   const _Top({
     required this.onDateChanged,
     required this.selectedDay,
     required this.initTitle,
-    required this.onTextChanged,
+    required this.onTextSaved,
     required this.formKey,
     Key? key,
   }) : super(key: key);
@@ -155,39 +166,10 @@ class _Top extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
-              width: 120,
-              child: Form(
-                key: formKey,
-                child: TextFormField(
-                  validator: (String? val){
-                    if(val == null || val.isEmpty){
-                      return "Enter Something";
-                    } else {
-                      return null;
-                    }
-                  },
-                  onChanged: onTextChanged,
-                  initialValue: initTitle,
-                  textAlign: TextAlign.center,
-                  decoration: InputDecoration(
-                    hintText: "Name",
-                    hintStyle: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.delete,
-                size: 30,
-                color: Colors.red[400],
-              ),
-            )
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                width: 120,
+                child: CustomText(onTextSaved: onTextSaved, title: initTitle)),
           ],
         ),
         Row(
@@ -311,12 +293,10 @@ class _Middle2 extends StatelessWidget {
 }
 
 class _Bottom extends StatelessWidget {
-  final String title;
   final DateTime dueDate;
   final int progress;
   final onConfirmPressed;
   const _Bottom({
-    required this.title,
     required this.dueDate,
     required this.progress,
     required this.onConfirmPressed,

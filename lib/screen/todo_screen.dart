@@ -14,9 +14,11 @@ import 'mood_screen.dart';
 class ToDoScreen extends StatefulWidget {
   final DateTime selectedDay;
   final DateTime focusedDay;
-  const ToDoScreen(
-      {required this.selectedDay, required this.focusedDay, Key? key})
-      : super(key: key);
+  const ToDoScreen({
+    required this.selectedDay,
+    required this.focusedDay,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<ToDoScreen> createState() => _ToDoScreenState();

@@ -65,11 +65,19 @@ class LocalDatabase extends _$LocalDatabase {
   Future<List<Mood>> getMoodByFocusedDay(DateTime day) =>
       (select(moods)..where((tbl) => tbl.date.month.equals(day.month))).get();
 
-  Future<Goal> getGoalById(int id) =>
+
+  Future<Goal> getGoalByIdFuture(int id) =>
       (select(goals)..where((tbl) => tbl.id.equals(id))).getSingle();
+
+  Stream<Goal> getGoalByIdStream(int id) =>
+      (select(goals)..where((tbl) => tbl.id.equals(id))).watchSingle();
 
   Future<Todo> getTodoById(int id) =>
       (select(todos)..where((tbl) => tbl.id.equals(id))).getSingle();
+
+  // Fake
+  Stream<Goal> getGoalForFake() =>
+      (select(goals)..where((tbl) => tbl.id.equals(-1))).watchSingle();
 
   // join
   Stream<List<MoodWithColor>> getMoodWithColor() {

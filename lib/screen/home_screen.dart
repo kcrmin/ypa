@@ -137,6 +137,7 @@ class _Bottom extends StatelessWidget {
                       GetIt.I<LocalDatabase>().removeGoalById(snapshot.data![index].id);
                     },
                     child: GoalCard(
+                      id: snapshot.data![index].id,
                       name: snapshot.data![index].title,
                       progress: snapshot.data![index].progress,
                       dueDate: snapshot.data![index].dueDate,

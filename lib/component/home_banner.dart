@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:ypa/util/goal_dialog.dart';
 import 'package:ypa/util/string_color.dart';
 
+import 'goal_form.dart';
+
 class HomeBanner extends StatelessWidget {
   final title;
-  const HomeBanner({
-    required this.title,
-    Key? key}) : super(key: key);
+  const HomeBanner({required this.title, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,15 @@ class HomeBanner extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onTap: (){
-                showGoalDialog(context, null);
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Dialog(
+                      child: GoalForm(),
+                    );
+                  },
+                );
               },
               child: Text(
                 String.fromCharCode(Icons.add.codePoint),

@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:ypa/database/drift_database.dart';
 import 'package:ypa/util/string_color.dart';
 
 class GoalCard extends StatefulWidget {
+  final int id;
   final String name;
   final int progress;
   final DateTime dueDate;
   const GoalCard({
+    required this.id,
     required this.name,
     required this.progress,
     required this.dueDate,
@@ -18,21 +22,47 @@ class GoalCard extends StatefulWidget {
 }
 
 class _GoalCardState extends State<GoalCard> {
+  String name = "";
+  int progress = 0;
+  DateTime dueDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this.name = widget.name;
+    this.progress = widget.progress;
+    this.dueDate = widget.dueDate;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      decoration: BoxDecoration(
-        color: stringColor("F5EFE6"),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Column(
-        children: [
-          _TopHalf(name: widget.name, dueDate: widget.dueDate),
-          _BottomHalf(progress: widget.progress),
-        ],
-      ),
+    return StreamBuilder<Goal>(
+      stream: GetIt.I<LocalDatabase>().getGoalByIdStream(widget.id),
+      builder: (context, snapshot) {
+        // error
+        if(snapshot.hasError){
+          return Center(child: Text("Something went wrong"),);
+        }
+        // Future build ran for the first time and Loading
+        if(snapshot.connectionState != ConnectionState.none && !snapshot.hasData){
+          return Center(child: CircularProgressIndicator());
+        }
+        return Container(
+          width: MediaQuery.of(context).size.width,
+          height: 80,
+          decoration: BoxDecoration(
+            color: stringColor("F5EFE6"),
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Column(
+            children: [
+            _TopHalf(name: snapshot.data!.title, dueDate: snapshot.data!.dueDate),
+              _BottomHalf(progress: snapshot.data!.progress),
+            ],
+          ),
+        );
+      }
     );
   }
 }
