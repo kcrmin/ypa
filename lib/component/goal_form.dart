@@ -31,7 +31,6 @@ class _GoalFormState extends State<GoalForm> {
 
   @override
   Widget build(BuildContext context) {
-    print("HI");
 
     return FutureBuilder<Goal>(
         future: widget.selectedGoalId == null
