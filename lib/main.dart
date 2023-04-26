@@ -36,11 +36,12 @@ void main() async {
 
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         inputDecorationTheme: CustomInputTheme().theme(),
       ),
-      initialRoute: '/',
+      initialRoute: '/mood',
       routes: {
         '/': (context) => HomeScreen(),
         '/class': (context) => ClassroomScreen(),

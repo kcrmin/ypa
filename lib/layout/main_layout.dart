@@ -21,7 +21,7 @@ class MainLayout extends StatelessWidget {
               Navigator.of(context).popUntil((route) => route.isFirst);
             },
             icon: Image.asset(
-              'asset/img/10_F.png',
+              'asset/img/YPA_Logo.png',
               scale: 6,
             ),
           ),

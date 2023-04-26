@@ -65,14 +65,15 @@ class _GoalFormState extends State<GoalForm> {
             ),
             height: 300, // _Middle1 = 250 || _Middle2 = 450
             width: 350,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _Top(
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
+                    child: _Top(
                       onDateChanged: onDateChanged,
                       selectedDay: dueDate,
                       initTitle: title ?? "",
@@ -80,15 +81,18 @@ class _GoalFormState extends State<GoalForm> {
                       formKey: formKey,
                       dueDate: dueDate,
                     ),
-                    // _Middle1(currentNum: currentNum1, percentage: percentage, onChanged: onNumChanged1),
-                    _Middle2(currentNum: progress, onChanged: onNumChanged2),
-                    _Bottom(
+                  ),
+                  // _Middle1(currentNum: currentNum1, percentage: percentage, onChanged: onNumChanged1),
+                  _Middle2(currentNum: progress, onChanged: onNumChanged2),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
+                    child: _Bottom(
                       dueDate: this.dueDate,
                       progress: this.progress,
                       onConfirmPressed: onConfirmPressed,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
@@ -172,10 +176,11 @@ class _Top extends StatelessWidget {
           children: [
             Expanded(
               child: Container(
-                width: double.infinity,
+                  width: double.infinity,
                   decoration:
                       BoxDecoration(borderRadius: BorderRadius.circular(20)),
-                  child: CustomText(onTextSaved: onTextSaved, title: initTitle)),
+                  child:
+                      CustomText(onTextSaved: onTextSaved, title: initTitle)),
             ),
           ],
         ),
@@ -279,7 +284,8 @@ class _Middle2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         NumberPicker(
           minValue: 0,
@@ -289,6 +295,7 @@ class _Middle2 extends StatelessWidget {
           onChanged: onChanged,
           itemHeight: 100,
           itemWidth: 100,
+
           step: 5,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),

@@ -19,7 +19,6 @@ class MoodPieChart extends StatelessWidget {
   final onDoubleTap;
   int? selectedColor;
 
-
   MoodPieChart({
     required this.radius,
     required this.excited_value,
@@ -40,29 +39,27 @@ class MoodPieChart extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width - 16,
       child: Column(
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: _Chart(
-                    radius: radius,
-                    excited_value: excited_value,
-                    sad_value: sad_value,
-                    calm_value: calm_value,
-                    happy_value: happy_value,
-                    frustrated_value: frustrated_value,
-                    angry_value: angry_value,
-                  ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(width: 40),
+              _IndicatorList(),
+              Expanded(
+                child: _Chart(
+                  radius: radius,
+                  excited_value: excited_value,
+                  sad_value: sad_value,
+                  calm_value: calm_value,
+                  happy_value: happy_value,
+                  frustrated_value: frustrated_value,
+                  angry_value: angry_value,
                 ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: _IndicatorList(),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
           FutureBuilder<List<MoodColor>>(
               future: GetIt.I<LocalDatabase>().getColors(),
@@ -104,7 +101,7 @@ class _MoodPicker extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(height: 12),
+          SizedBox(height: 9),
           Text(
             "Pick Your Color",
             style: TextStyle(
@@ -169,15 +166,27 @@ class _Chart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      height: 200,
-      child: PieChart(PieChartData(
-        sections: showingSections(),
-        centerSpaceRadius: 35,
-        startDegreeOffset: 270,
-      )),
-    );
+    return radius == 0
+        ? Align(
+            alignment: Alignment.center,
+            child: Text(
+              "How was your day?",
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.grey,
+              ),
+            ))
+        : Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              height: radius == 0 ? 100 : 197,
+              child: PieChart(PieChartData(
+                sections: showingSections(),
+                centerSpaceRadius: 35,
+                startDegreeOffset: 270,
+              )),
+            ),
+          );
   }
 
   List<PieChartSectionData> showingSections() {
@@ -267,14 +276,14 @@ class _Indicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 95,
+      width: 120,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 10,
-            height: 10,
+            width: 15,
+            height: 15,
             color: color,
           ),
           SizedBox(width: 8),
@@ -282,7 +291,7 @@ class _Indicator extends StatelessWidget {
             title,
             style: TextStyle(
                 fontWeight: FontWeight.w800,
-                fontSize: 11,
+                fontSize: 16,
                 color: Colors.grey[800]),
           ),
         ],

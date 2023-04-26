@@ -266,7 +266,7 @@ class _Bottom extends StatelessWidget {
                     selectedColor = snapshot.data?.colorId;
 
                     return MoodPieChart(
-                      radius: 60,
+                      radius: 58,
                       angry_value: (angry.length.toDouble() / total) * 100,
                       frustrated_value:
                           (frustrated.length.toDouble() / total) * 100,
@@ -285,7 +285,7 @@ class _Bottom extends StatelessWidget {
             );
           } else {
             return MoodPieChart(
-              radius: 80,
+              radius: 0,
               angry_value: 0,
               frustrated_value: 0,
               happy_value: 0,
