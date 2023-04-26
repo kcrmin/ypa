@@ -41,7 +41,7 @@ void main() async {
         useMaterial3: true,
         inputDecorationTheme: CustomInputTheme().theme(),
       ),
-      initialRoute: '/mood',
+      initialRoute: '/',
       routes: {
         '/': (context) => HomeScreen(),
         '/class': (context) => ClassroomScreen(),
