@@ -79,7 +79,7 @@ class LocalDatabase extends _$LocalDatabase {
   Stream<Goal> getGoalForFake() =>
       (select(goals)..where((tbl) => tbl.id.equals(-1))).watchSingle();
 
-  // join
+  // join query
   Stream<List<MoodWithColor>> getMoodWithColor() {
     final query = select(moods).join([
       innerJoin(moodColors,
